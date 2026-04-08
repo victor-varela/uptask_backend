@@ -1,0 +1,62 @@
+BACKEND:
+- Es una hoja en blanco. Hay que decidir cada cosa a instalar a diferencia de Frontend con npm create vit@latest que da una plantilla lista.
+
+1- Se ejecuta npm init --y 'le dice que si a todo y crea package.json por defecto'
+2- Se instalan dependencias: express, -D @types/express, nodemon ts-node, typescript
+3- Se crea carpeta src (es una hoja en blanco) adentro van index.ts y server.ts
+4- Crear el archivo tsconfig.json (es la configuracion de typescript, Le dice al compilador de TypeScript cómo debe trabajar en tu proyecto. Sin ese archivo, TypeScript no sabe qué reglas aplicar.)
+
+    {
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "strict": true,
+    "outDir": "./dist"
+  }
+}
+
+ Esto le dice: "compilá el código a ES6, usá CommonJS, sé estricto, y poné el resultado compilado en la carpeta /dist".
+
+El flujo es asi: Tu código .ts  →  TypeScript lo compila  →  genera .js  →  Node.js ejecuta el .js
+ Node.js no entiende TypeScript directamente, por eso necesita ese paso de compilación intermedio.
+
+ 5- En server.ts instanciamos express
+
+    Sin Express, con Node.js puro
+import http from "http";
+
+const server = http.createServer((req, res) => {
+  if (req.url === "/usuarios" && req.method === "GET") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ usuarios: [] }));
+  } else if (req.url === "/usuarios" && req.method === "POST") {
+    // más código...
+  }
+  // y así para cada endpoint...
+});
+
+Se vuelve un if/else gigante muy rápido. Vos manejás todo a mano: headers, status codes, parsear el body, etc.
+
+Con Express
+import express from "express";
+const app = express();
+
+app.get("/usuarios", (req, res) => {
+  res.json({ usuarios: [] });
+});
+
+app.post("/usuarios", (req, res) => {
+  // ...
+});
+Mucho más limpio. Express te da:
+
+Routing — organizar endpoints por método y URL
+Middlewares — funciones que se ejecutan antes de llegar al endpoint (autenticación, parsear JSON, logs, etc.)
+req y res mejorados — con métodos útiles como res.json(), req.body, req.params
+
+
+ 6- En index.ts creamos el puerto donde corre el servidor.
+ 7- Modificamos en package.json para ver en consola 
+       ( "scripts": {
+            "dev": "nodemon --exec ts-node src/index.ts"
+        },)
