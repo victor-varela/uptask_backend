@@ -1,4 +1,4 @@
-import server from "./server"; //el export default de server es app. Aca le cambio el nombre porque hace mas sentido
+import server from "./server"; //el export default de server es app. Aca le cambio el nombre porque hace mas sentido y asi se ejecuta todo el codigo en server inmediatamente
 import colors from 'colors'
 
 const port = process.env.PORT || 4000;

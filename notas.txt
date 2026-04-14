@@ -60,6 +60,28 @@ req y res mejorados — con métodos útiles como res.json(), req.body, req.para
        ( "scripts": {
             "dev": "nodemon --exec ts-node src/index.ts"
         },)
+
+
+     El flujo completo cuando arranca la APP:
+ 
+            npm run dev
+                ↓
+            index.ts se ejecuta
+                ↓
+            encuentra el import de server
+                ↓
+            ejecuta server.ts de arriba a abajo:
+                → dotenv.config()   (carga el .env)
+                → connectDB()       (conecta MongoDB)
+                → const app = express()
+                ↓
+            vuelve a index.ts
+                ↓
+            server.listen()  (arranca el servidor)
+  
+
+
+
 8- Crear la DB en MongoDB. MERN stack. Sin la DB los datos se guardarian en memoria local y al reiniciar se pierden. Para ser persistentes deben vivir en una DB. Para visualizar los datos usamos una GUI (graphic user interface) para ello usamos MongoDB COMPASS que es una aplicacion en la compu. IMPORTANTE=== al crear la db en mongo hay que guardar el password que nos da al momento de la creacion en el proyecto en un .env o algo porque sino no la vemos mas la contraseña. En el menu izquiero de mongo busca database access and network y ahi puedes editar la password 'password: Pw9RLYWGNtfmhV1u'
 
               El flujo completo del stack MERN
