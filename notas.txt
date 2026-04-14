@@ -55,8 +55,25 @@ Middlewares — funciones que se ejecutan antes de llegar al endpoint (autentica
 req y res mejorados — con métodos útiles como res.json(), req.body, req.params
 
 
- 6- En index.ts creamos el puerto donde corre el servidor.
- 7- Modificamos en package.json para ver en consola 
+6- En index.ts creamos el puerto donde corre el servidor.
+7- Modificamos en package.json para ver en consola 
        ( "scripts": {
             "dev": "nodemon --exec ts-node src/index.ts"
         },)
+8- Crear la DB en MongoDB. MERN stack. Sin la DB los datos se guardarian en memoria local y al reiniciar se pierden. Para ser persistentes deben vivir en una DB. Para visualizar los datos usamos una GUI (graphic user interface) para ello usamos MongoDB COMPASS que es una aplicacion en la compu. IMPORTANTE=== al crear la db en mongo hay que guardar el password que nos da al momento de la creacion en el proyecto en un .env o algo porque sino no la vemos mas la contraseña. En el menu izquiero de mongo busca database access and network y ahi puedes editar la password 'password: Pw9RLYWGNtfmhV1u'
+
+              El flujo completo del stack MERN
+
+                    React (frontend)
+                        ↓ hace peticiones HTTP
+                    Express (backend)
+                        ↓ consulta o guarda datos
+                    MongoDB (base de datos)
+
+En este punto abrimos compass para VER los datos de la DB pero AUN no esta conectado nuestro codigo con MongoDB. Para ello usamos un ODM (object Document Mapper 'transformador/Mapper') === Mongoose.
+
+                  ORM MAPEA OBJETOS (JS: mi codigo al final es JS) A TABLAS
+                  ODM MAPEA OBJETOS (JS: mi codigo al final es JS) A DOCUMENTOS JSON
+
+9- Instalamos mongoose npm i mongoose y doteenv para manejar las variables de entorno. EL .ENV DEBE IR AL MISMO NIVEL QUE EL packageJSON- EL ARCHIVO .ENV DEBE IR AL MISMO NIVEL QUE EL packageJSON- EL ARCHIVO .ENV DEBE IR AL MISMO NIVEL QUE EL packageJSON. IGUAL QUE EL GITIGNORE
+10- Conectar express (mi codigo) con mongoose. Creamos una carpeta config para tener TODAS las configuraciones DB, CORS, Servicio para enviar mais, etc. Dentro de config creamos db.ts y ahi configuro la conexion de express con mongoose.
