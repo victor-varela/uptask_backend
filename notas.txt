@@ -1,3 +1,14 @@
+Para usar prettier como formater:
+ Creá un archivo .vscode/settings.json en la raíz del proyecto con esto:
+json{
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  }
+}
+
+
+
 BACKEND:
 - Es una hoja en blanco. Hay que decidir cada cosa a instalar a diferencia de Frontend con npm create vit@latest que da una plantilla lista.
 
@@ -99,3 +110,5 @@ En este punto abrimos compass para VER los datos de la DB pero AUN no esta conec
 
 9- Instalamos mongoose npm i mongoose y doteenv para manejar las variables de entorno. EL .ENV DEBE IR AL MISMO NIVEL QUE EL packageJSON- EL ARCHIVO .ENV DEBE IR AL MISMO NIVEL QUE EL packageJSON- EL ARCHIVO .ENV DEBE IR AL MISMO NIVEL QUE EL packageJSON. IGUAL QUE EL GITIGNORE
 10- Conectar express (mi codigo) con mongoose. Creamos una carpeta config para tener TODAS las configuraciones DB, CORS, Servicio para enviar mais, etc. Dentro de config creamos db.ts y ahi configuro la conexion de express con mongoose.
+
+11- Crear los primeros modelos: la forma que van a tener los datos en la DB. Esta app es un CRM de proyectos por lo que requerimos por cada proyecto cierta informacion (eso es lo que va en el modelo) se puede ir agregando mas informacion al modelo a medida que vamos avanzando. Arrancamos con nombre, cliente y descripcion y luego se puede agregar tareas, archivos, etc. En src cramos la carpeta models
