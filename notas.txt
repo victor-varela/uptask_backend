@@ -111,4 +111,13 @@ En este punto abrimos compass para VER los datos de la DB pero AUN no esta conec
 9- Instalamos mongoose npm i mongoose y doteenv para manejar las variables de entorno. EL .ENV DEBE IR AL MISMO NIVEL QUE EL packageJSON- EL ARCHIVO .ENV DEBE IR AL MISMO NIVEL QUE EL packageJSON- EL ARCHIVO .ENV DEBE IR AL MISMO NIVEL QUE EL packageJSON. IGUAL QUE EL GITIGNORE
 10- Conectar express (mi codigo) con mongoose. Creamos una carpeta config para tener TODAS las configuraciones DB, CORS, Servicio para enviar mais, etc. Dentro de config creamos db.ts y ahi configuro la conexion de express con mongoose.
 
-11- Crear los primeros modelos: la forma que van a tener los datos en la DB. Esta app es un CRM de proyectos por lo que requerimos por cada proyecto cierta informacion (eso es lo que va en el modelo) se puede ir agregando mas informacion al modelo a medida que vamos avanzando. Arrancamos con nombre, cliente y descripcion y luego se puede agregar tareas, archivos, etc. En src cramos la carpeta models
+11- Crear los primeros modelos: la forma que van a tener los datos en la DB. Esta app es un CRM de proyectos por lo que requerimos por cada proyecto cierta informacion (eso es lo que va en el modelo) se puede ir agregando mas informacion al modelo a medida que vamos avanzando. Arrancamos con nombre, cliente y descripcion y luego se puede agregar tareas, archivos, etc. En src cramos la carpeta models y agregamos los modelos.
+
+La arquitectura del proyecto es MVC. Una arquitectura proporciona SEPARACION Y ORDEN, es mas ESCALABLE. Ademas del modelo (datos) contoller (quien consulta y recibe las respuestas del modelo, el que comunica modelo y vista) y la vista (react- Html que muestra los datos) existe el ROUTER (encargado de registrar las URLs o endpoint de la APP) El flujo es asi:
+
+      URL -> controller -> model -> view (json)
+
+Sin el router no hay interaccion porque a partir de la visita a una URL es donde comienza el flujo de la app con el usuario, hasta ahora el flujo era interno de la app, levantar el servidor y conectar la DB.
+
+12- Crear el ROUTER. EN src/routes/projectRoutes.ts
+13- Crear la carpeta contollers y ProjectController.ts (es la clase para agrupar en sus metodos los controller) los controladores seran clases, en el proyecto anterior se usaban handlers porque era mas pequeño el proyecto. Luego, como ya se vio, router llama a controller llama a modelo entrea a vista. Por eso EN router importamos el ProjectController
