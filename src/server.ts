@@ -1,7 +1,13 @@
 import express from "express";
 import { connectDB } from "./config/db";
 import dotenv from "dotenv";
-import { ProjectController } from "./controllers/ProjectController";
+import projectRoutes from "./routes/projectRoutes"; //Default import → sin llaves, podés ponerle cualquier nombre.
+
+/**
+ *  export default algo  →  se importa SIN llaves  →  cualquier nombre
+    export const algo    →  se importa CON llaves  →  debe ser el mismo nombre
+ * 
+ */
 
 dotenv.config();
 
@@ -9,8 +15,10 @@ connectDB();
 
 const app = express();
 
-//Routes
-app.use("/api/projects", ProjectController.getAllProjects);
+//Routes- Enlazador principal de rutas
+
+//Rutas de api/projects
+app.use("/api/projects", projectRoutes);
 
 export default app;
 

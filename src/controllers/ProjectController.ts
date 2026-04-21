@@ -4,6 +4,10 @@ export class ProjectController {
   static getAllProjects = async (req: Request, res: Response) => {
     res.send("Todos los proyectos");
   };
+
+  static createProject = async (req: Request, res: Response) => {
+    res.send("Creando proyecto...");
+  };
 }
 
 /**
