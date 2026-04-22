@@ -15,6 +15,9 @@ connectDB();
 
 const app = express();
 
+//Habilitar lectura Json
+app.use(express.json());
+
 //Routes- Enlazador principal de rutas
 
 //Rutas de api/projects
