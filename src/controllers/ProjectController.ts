@@ -1,11 +1,14 @@
 import type { Request, Response } from "express";
 import Project from "../models/Project";
 
+//Creamos la clase - y dentro sus metodos
 export class ProjectController {
+  //obtener todos los proyectos
   static getAllProjects = async (req: Request, res: Response) => {
     res.send("Todos los proyectos");
   };
 
+  //crear un proyecto
   static createProject = async (req: Request, res: Response) => {
     //Primero lo instanciamos
     const project = new Project(req.body);

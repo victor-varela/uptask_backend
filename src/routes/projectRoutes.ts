@@ -1,11 +1,19 @@
 import { Router } from "express";
+import { body } from "express-validator";
 import { ProjectController } from "../controllers/ProjectController";
 
 //Instaciamos Router de express
 const router = Router();
 
 //Obtener todos los proyectos
-router.get("/", ProjectController.getAllProjects);
+router.get(
+  "/",
+  //validamos express-validator [body(nombre del campo igual al esquema/modelo)]
+  body("projectName").notEmpty().withMessage("El nombre del proyecto es obligatorio"),
+  body("clientName").notEmpty().withMessage("El nombre del cliente es obligatorio"),
+  body("description").notEmpty().withMessage("La descripcion del proyecto es obligatoria"),
+  ProjectController.getAllProjects,
+);
 
 //Crear un Proyecto
 router.post("/", ProjectController.createProject);
@@ -40,5 +48,9 @@ export default router;
     export const algo    →  se importa CON llaves  →  debe ser el mismo nombre
 
    Aca van las rutas especificas de los proyectos, se ve la separacion de responsabilidad.. en el server esta la ruta api/projects y aca estan cada accion de esa ruta.
+
+   Usamos en este router a express validator. Validator tiene una funcion 'body' [  import {body} from 'express-validator' ] esta se le envia el nombre del campo que queremos validar y luego le anidamos otras funciones de validator como .notEmpty() .whitMessage() - eso es lo que hace validator. Este codigo lo escribimos aca en el router para no contaminar al controller y tener las responsabilidades separadas. OJO que tenemos un middleware handlerInputErrors que va ANTES del controller. Este middelware tiene la funcion next que permite que el codigo siga el flujo hacia el controller una vez que paso la validacion O si hubo un error entonces DETIENE EL FLUJO, de ahi su utilidad. Si no tenemos la funcion que maneja los posibles errores NO VALE DE NADA la validacion que hicimos.
+
+   SI lees el codigo actual se ve que primero esta la validacion y luego se escribio la funcion del controller. Esto no fue asi. Primero escrbi la funcion del controller que es la que llama a cada metodo estatico (create, getAll, etc..) y despues le agregue la validacion.
  *
  */

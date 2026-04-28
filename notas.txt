@@ -128,7 +128,7 @@ Sin el router no hay interaccion porque a partir de la visita a una URL es donde
 
 14- Creamos la ruta para crear proyectos. Antes hicimos la ruta de obtener todos los proyectos y mockeamos con 'todos los proyectos' en res.send(). Al tener que simular en este punto las entradas del usuario con un json mockeado desde Postman (simular segun el modelo los datos que envia el usuario), hay que HABILITAR le lectura de json en express en server.ts : app.use(express.json());
 
-15- Agregar validacion a los proyectos creados--> express validator. 
+15- Agregar validacion a los proyectos creados--> express validator. Instalamos: npm i express-validator
 
       El frontend es opcional. El backend es la autoridad.
 
@@ -150,4 +150,26 @@ Envía request
       ↓
 Backend valida (seguro) Seguridad
       ↓
-DB
+      DB
+
+Para validar en el backend, usamos express validator. Se puede escribir el codigo de express validator tanto en router, controlador y custom Middleware. En este caso lo escribimos en el router.
+
+Ejemplo de como seria en un custom middleware:
+
+
+En un Middleware custom ✅ — válido para validaciones reutilizables
+typescript// middleware/validateProject.ts
+export const validateProject = [
+  body("projectName").notEmpty(),
+  body("clientName").notEmpty(),
+  handlerInputErrors
+]
+
+// router
+router.post("/", validateProject, ProjectController.createProject)
+
+"""Útil cuando la misma validación se repite en varios endpoints."""
+
+El profe eligió el Router porque es la forma más directa y clara para aprender. En proyectos más grandes se suele mover a middlewares separados para no repetir código.
+
+Creamos carpeta middleware en src/ validation.ts --> este es el que maneja los posibles errores, sin esta funcion validator no hace nada. Esta funcion va ANTES del controller en el router.
