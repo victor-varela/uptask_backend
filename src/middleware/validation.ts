@@ -5,6 +5,7 @@ import { validationResult } from "express-validator";
 export const handlerInputErrors = (req: Request, res: Response, next: NextFunction) => {
   // Extrae los errores de validación que dejó express-validator en el req
   let errors = validationResult(req);
+  console.log(errors);
 
   // Si hay errores, corta el flujo y devuelve 400 con los errores
   if (!errors.isEmpty()) {
@@ -31,7 +32,7 @@ export const handlerInputErrors = (req: Request, res: Response, next: NextFuncti
         handlerInputErrors,              // Paso 2: lee esos errores del req
         ProjectController.createProject  // Solo llega acá si no hay errores
         )
-        
+
 body() no detiene nada por sí solo — solo anota los errores en el req. Luego validationResult(req) los lee de ahí. Por eso necesitás los dos — uno escribe, el otro lee.
  *
  *

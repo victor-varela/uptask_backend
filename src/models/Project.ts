@@ -11,17 +11,17 @@ export type ProjectType = Document & {
 export const ProjectSchema = new Schema({
   projectName: {
     type: String,
-    require: true,
+    required: true,
     trim: true,
   },
   clientName: {
     type: String,
-    require: true,
+    required: true,
     trim: true,
   },
   description: {
     type: String,
-    require: true,
+    required: true,
     trim: true,
   },
 });

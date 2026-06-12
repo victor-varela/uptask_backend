@@ -21,7 +21,7 @@ app.use(express.json());
 //Routes- Enlazador principal de rutas
 
 //Rutas de api/projects
-app.use("/api/projects", projectRoutes);
+app.use("/api/projects", projectRoutes); // el export del archivo projectRoutes.ts es router PERO como es DEFAULT aqui le cambiamos el nombre a projectRoutes que coincide con el nombre del arhivo. ES LO MISMO si importamos router.
 
 export default app;
 

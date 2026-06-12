@@ -105,13 +105,13 @@ req y res mejorados — con métodos útiles como res.json(), req.body, req.para
 
 En este punto abrimos compass para VER los datos de la DB pero AUN no esta conectado nuestro codigo con MongoDB. Para ello usamos un ODM (object Document Mapper 'transformador/Mapper') === Mongoose.
 
-                  ORM MAPEA OBJETOS (JS: mi codigo al final es JS) A TABLAS
-                  ODM MAPEA OBJETOS (JS: mi codigo al final es JS) A DOCUMENTOS JSON
+                  ORM MAPEA OBJETOS (JS: mi codigo al final es JS) A TABLAS (SQL)
+                  ODM MAPEA OBJETOS (JS: mi codigo al final es JS) A DOCUMENTOS JSON (NO SQL)
 
 9- Instalamos mongoose npm i mongoose y doteenv para manejar las variables de entorno. EL .ENV DEBE IR AL MISMO NIVEL QUE EL packageJSON- EL ARCHIVO .ENV DEBE IR AL MISMO NIVEL QUE EL packageJSON- EL ARCHIVO .ENV DEBE IR AL MISMO NIVEL QUE EL packageJSON. IGUAL QUE EL GITIGNORE
-10- Conectar express (mi codigo) con mongoose. Creamos una carpeta config para tener TODAS las configuraciones DB, CORS, Servicio para enviar mais, etc. Dentro de config creamos db.ts y ahi configuro la conexion de express con mongoose.
+10- Conectar express (mi codigo) con mongoose. Creamos una carpeta config para tener TODAS las configuraciones DB, CORS, Servicio para enviar mails, etc. Dentro de config creamos db.ts y ahi configuro la conexion de express con mongoose.
 
-11- Crear los primeros modelos: la forma que van a tener los datos en la DB. Esta app es un CRM de proyectos por lo que requerimos por cada proyecto cierta informacion (eso es lo que va en el modelo) se puede ir agregando mas informacion al modelo a medida que vamos avanzando. Arrancamos con nombre, cliente y descripcion y luego se puede agregar tareas, archivos, etc. En src cramos la carpeta models y agregamos los modelos.
+11- Crear los primeros modelos: la forma que van a tener los datos en la DB. Esta app es un CRM de proyectos por lo que requerimos por cada proyecto cierta informacion (eso es lo que va en el modelo) se puede ir agregando mas informacion al modelo a medida que vamos avanzando. Arrancamos con nombre, cliente y descripcion y luego se puede agregar tareas, archivos, etc. En src creamos la carpeta models y agregamos los modelos.
 
 La arquitectura del proyecto es MVC. Una arquitectura proporciona SEPARACION Y ORDEN, es mas ESCALABLE. Ademas del modelo (datos) contoller (quien consulta y recibe las respuestas del modelo, el que comunica modelo y vista) y la vista (react- Html que muestra los datos) existe el ROUTER (encargado de registrar las URLs o endpoint de la APP) El flujo es asi:
 
@@ -157,7 +157,7 @@ Para validar en el backend, usamos express validator. Se puede escribir el codig
 Ejemplo de como seria en un custom middleware:
 
 
-En un Middleware custom ✅ — válido para validaciones reutilizables
+En un Middleware custom ✅ — válido para validaciones REUTILIZABLES
 typescript// middleware/validateProject.ts
 export const validateProject = [
   body("projectName").notEmpty(),

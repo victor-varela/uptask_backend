@@ -5,7 +5,12 @@ import Project from "../models/Project";
 export class ProjectController {
   //obtener todos los proyectos
   static getAllProjects = async (req: Request, res: Response) => {
-    res.send("Todos los proyectos");
+    try {
+      const projects = await Project.find({}); //tiene un objeto (  {}  ) porque se van a agregar params para buscar proyectos mas adelante
+      res.json(projects);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   //crear un proyecto
@@ -37,7 +42,18 @@ export class ProjectController {
  *
  *  Aca entra en accion Mongoose, es quien traduce el objeto a sql a traves de usar el modelo Project y sus metodos, create, save, etc
  *
- *
- *
+ *  FLUJO DE UN ENDPOINT:
+ * 
+ *         Recibir → Procesar → Devolver es el patrón universal de cualquier servidor.
+ *          static createProject = async (req: Request, res: Response) => {
+                      // 1. LLEGA — leés del req
+                      const project = new Project(req.body);
+
+                      // 2. PROCESÁS — operación en la DB
+                      await project.save();
+
+                      // 3. DEVOLVÉS — escribís en res
+                      res.json({ message: "Proyecto creado correctamente" });
+                    };
  *
  */
