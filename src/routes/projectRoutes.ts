@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { ProjectController } from "../controllers/ProjectController";
 import { handlerInputErrors } from "../middleware/validation";
 
@@ -8,6 +8,15 @@ const router = Router();
 
 //Obtener todos los proyectos
 router.get("/", ProjectController.getAllProjects);
+
+//Obtener proyecto por Id
+router.get(
+  "/:id",
+  //validamos el Id con el metodo de ExpressValidator
+  param("id").isMongoId().withMessage("Id no es valido"),
+  handlerInputErrors,
+  ProjectController.getProjectById,
+);
 
 //Crear un Proyecto
 router.post(
@@ -56,5 +65,7 @@ export default router;
    SI lees el codigo actual se ve que primero esta la validacion y luego se escribio la funcion del controller. Esto no fue asi. Primero escrbi la funcion del controller que es la que llama a cada metodo estatico (create, getAll, etc..) y despues le agregue la validacion.
 
    getAllProjects no tiene validacion porque es solamente visitar la URL y traer todos los proyectos.
+
+   getProjectById SI tiene validacion porque MongoDb nos da objectId que son un formato especifico de la plataforma. Express validator ya tiene incorporado un metodo para validar los ids de mongo db ( isMongoDbId o algo asi jejej que facil) --> entonces usamos ese metodo para validar porque sino nos pasan cualquier cosa por url y la app revienta. Y esa validacion va en el router obviamente.
  *
  */

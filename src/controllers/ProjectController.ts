@@ -13,6 +13,22 @@ export class ProjectController {
     }
   };
 
+  //Obtener un proyecto por ID
+  static getProjectById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const project = await Project.findById(id);
+      //chequear id 'malicioso o parecido a un id de mongo pero invalido ej:69e8e54b27fab011dfcdc1310 borre el ultimo digito y coloque un 0. Si no se valida tira null--> ahi RETORNAMOS == return para no romper la app '
+      if (!project) {
+        const error = new Error("Proyecto no encontrado");
+        return res.status(404).json({ error: error.message });
+      }
+      res.json(project);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //crear un proyecto
   static createProject = async (req: Request, res: Response) => {
     //Primero lo instanciamos
