@@ -28,6 +28,19 @@ router.post(
   handlerInputErrors,
   ProjectController.createProject,
 );
+
+//Actualizar un Proyecto
+router.put(
+  "/:id",
+  //validamos id con express-validator
+  param("id").isMongoId().withMessage("Id no valido"),
+  //validamos los datos que vamos a enviar ANTES de actualizar
+  body("projectName").notEmpty().withMessage("El nombre del proyecto es obligatorio"),
+  body("clientName").notEmpty().withMessage("El nombre del cliente es obligatorio"),
+  body("description").notEmpty().withMessage("La descripcion del proyecto es obligatoria"),
+  handlerInputErrors,
+  ProjectController.updateProject,
+);
 export default router;
 
 /**

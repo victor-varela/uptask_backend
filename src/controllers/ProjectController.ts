@@ -29,6 +29,26 @@ export class ProjectController {
     }
   };
 
+  //Actualizar un proyect
+  static updateProject = async (req: Request, res: Response) => {
+    //Similar a getProjectById (requerimos leer el id)
+    const { id } = req.params;
+    try {
+      //primero econtramos y actualizamos despues guardamos
+      const project = await Project.findByIdAndUpdate(id, req.body);
+      //Si no hay proyecto RETORNAMOS
+      if (!project) {
+        const error = new Error("Proyecto no encontrado");
+        return res.status(404).send({ error: error.message });
+      }
+      //ya encontramos y actuliazamos ahora GUARDAMOS project
+      await project.save();
+      res.send("Proyecto Actualizado");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //crear un proyecto
   static createProject = async (req: Request, res: Response) => {
     //Primero lo instanciamos
