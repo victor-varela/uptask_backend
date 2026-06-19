@@ -1,11 +1,11 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 //Definimos el Type- conectamos nuestro campo con el Document de mongoose del modelo para tener los utility types de TS
-export type ProjectType = Document & {
+export interface IProject extends Document {
   projectName: string;
   clientName: string;
   description: string;
-};
+}
 
 // Definimos el Schema con mongoose
 export const ProjectSchema = new Schema({
@@ -27,7 +27,7 @@ export const ProjectSchema = new Schema({
 });
 
 // Definimos el modelo en si-- conectamos el schema con mongoose
-const Project = mongoose.model<ProjectType>("Project", ProjectSchema);
+const Project = mongoose.model<IProject>("Project", ProjectSchema);
 
 export default Project;
 //  Cuando un archivo exporta una sola cosa, export default es la elección natural.
@@ -43,7 +43,22 @@ export default Project;
  *  ProjectType → named export porque es uno de varios exports posibles
     Project → default export porque es lo PRINCIPAL del archivo
  *
- *
- *
- *
+    EL profesor cambio el type de Project (porque no le gusta personalmente) de esto:
+  export type ProjectType = Document & {
+              projectName: string;
+              clientName: string;
+              description: string;
+                                  };
+
+    A esto:
+ *          export interface IProject extends Document  {
+                                  projectName: string;
+                                  clientName: string;
+                                  description: string;
+                                                         };
+ *  
+ * Respuesta Claude: 
+ * type    → mejor para tipos simples, uniones, alias
+  interface → mejor para describir estructuras de objetos 
+            y cuando extendés otras clases/interfaces
  */

@@ -187,3 +187,5 @@ Cliente (Postman/React)
     Controller (arma la respuesta)
         ↓
 Cliente recibe JSON
+
+16- Agregamos el modelo de Tareas. Esta app es de proyectos que se le agregan tareas. Al igual que el modelo de Project, creamos archivo en /models/Task.ts y ahi creamos el Schema.

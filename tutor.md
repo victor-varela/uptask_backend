@@ -30,10 +30,10 @@
 ---
 
 ## 📍 Progreso actual
-- **Sección activa:** 27 — UpTask: Proyectos - Modelos, rutas y controllers
-- **Último video completado:** 459 — Agregando validación en el servidor
-- **Próximo video:** 460 — Creando el Endpoint de obtener todos los proyectos
-- **Videos restantes sección 27:** 460, 461, 462, 463
+- **Sección activa:** 28 — UpTask: Tareas - Modelos, rutas y controllers
+- **Último video completado:** 463 — Creando el Endpoint para eliminar un proyecto
+- **Próximo video:** 464 (primer video sección 28)
+- **Sección 27:** ✅ COMPLETA
 
 ---
 
@@ -42,8 +42,8 @@
 | Sección | Tema | Estado | Alineación tutor |
 |---------|------|--------|-----------------|
 | 26 | UpTask - Primeros pasos backend | ✅ Completa | ✅ Total |
-| 27 | Proyectos - Modelos, rutas y controllers | 🔄 En curso | ✅ Total |
-| 28 | Tareas - Modelos, rutas y controllers | ⏳ Pendiente | ✅ Total — mismo patrón que sección 27 |
+| 27 | Proyectos - Modelos, rutas y controllers | ✅ Completa | ✅ Total |
+| 28 | Tareas - Modelos, rutas y controllers | 🔄 Siguiente | ✅ Total — mismo patrón que sección 27 |
 | 29 | Frontend - Primeros pasos | ⏳ Pendiente | ✅ Total — React + Vite + TypeScript |
 | 30 | Frontend - Creando Proyectos | ⏳ Pendiente | ✅ Total — React Query, formularios |
 | 31+ | Autenticación, Tareas frontend, etc. | ⏳ Pendiente | ⚠️ Actualizar cuando lleguemos |
@@ -68,25 +68,93 @@
 - `req` = leer lo que llega | `res` = escribir lo que devolvés
 - `req.body`, `req.params`, `req.query`
 - `res.json()` vs `res.send()`
+- Status codes: 200 (ok), 201 (creado), 400 (datos inválidos), 404 (no encontrado), 500 (error servidor)
 
 ### Mongoose / MongoDB
 - MongoDB = NoSQL, documentos JSON (vs PostgreSQL = SQL, tablas)
 - Mongoose = ODM (Object Document Mapper)
 - Schema = define la estructura | Modelo = conecta schema con la colección
 - `required: true` (NO `require: true`) — typo silencioso a evitar
-- `Project.find()` — trae todos los documentos
-- `Project.findById(id)` — trae uno por ID
-- `project.save()` — guarda un documento nuevo
+- `Project.find({})` — trae todos los documentos
+- `Project.findById(id)` — trae uno por ID, devuelve `null` si no existe
+- `project.save()` — guarda un documento nuevo o actualizado
+- `Project.findByIdAndUpdate(id, data)` — encuentra y actualiza en un paso
+- `project.deleteOne()` — elimina el documento encontrado
+- Mongoose ignora campos no definidos en el Schema — primera línea de defensa contra Mass Assignment
+- Patrón de dos pasos para delete: `findById()` → verificaciones → `deleteOne()`
 
 ### TypeScript
 - `_req` cuando el parámetro existe pero no se usa (convención)
 - `import type` para importar solo tipos sin código en runtime
 
 ### Express Validator
-- `body()` — anota errores en `req` pero no detiene el flujo
-- `validationResult(req)` — lee esos errores
+- `body()` — valida campos del body (POST/PUT)
+- `param()` — valida parámetros de la URL (GET/PUT/DELETE /:id)
+- `param("id").isMongoId()` — valida formato válido de MongoDB
+- `validationResult(req)` — lee los errores anotados
 - `handlerInputErrors` — middleware guardián que corta si hay errores
-- Orden en router: `body()` → `handlerInputErrors` → `controller`
+- Orden en router: `body()/param()` → `handlerInputErrors` → `controller`
+- Sin `handlerInputErrors` la validación no vale de nada
+
+### Arquitectura MVC — Patrón del proyecto
+- Un Router por recurso (projects, users, tasks)
+- Un Controller por recurso con métodos estáticos
+- Un modelo por recurso
+- Métodos estáticos = no necesitás instanciar la clase para usarlos
+- Flujo de un endpoint: Recibir (req) → Procesar (DB) → Devolver (res)
+- Router → rutea | Controller → ejecuta lógica
+
+### CRUD completo de Proyectos (Sección 27)
+```
+GET    /api/projects      → getAllProjects   → Project.find({})
+GET    /api/projects/:id  → getProjectById  → Project.findById(id)
+POST   /api/projects      → createProject   → new Project(req.body) + save()
+PUT    /api/projects/:id  → updateProject   → Project.findByIdAndUpdate(id, data)
+DELETE /api/projects/:id  → deleteProject   → findById() + verificaciones + deleteOne()
+```
+
+---
+
+## 🔒 Seguridad Web — Conceptos aprendidos
+
+### Mass Assignment Vulnerability
+- Pasar `req.body` directo a `findByIdAndUpdate` permite inyectar campos extra
+- Solución: extraer solo los campos necesarios
+```typescript
+const { projectName, clientName, description } = req.body;
+await Project.findByIdAndUpdate(id, { projectName, clientName, description });
+```
+- Mongoose filtra campos no definidos en el Schema — pero no es suficiente cuando el Schema crece
+
+### CORS
+- Bloquea peticiones desde navegadores de dominios no autorizados
+- NO protege contra curl, Postman o scripts — esos ignoran CORS
+- La seguridad siempre va en el backend, nunca en el frontend
+
+### Autorización
+- No basta con que el ID exista para eliminar/modificar un recurso
+- Patrón: findById() → ¿tenés permiso? → operación
+- `findByIdAndDelete()` saltea verificaciones — peligroso en API pública
+
+### Regla de oro
+> La seguridad siempre va en el backend. El frontend es comodidad para el usuario, nunca una barrera de seguridad.
+
+---
+
+## 🎯 Path de Hacking Ético — Para explorar después del curso
+
+```
+Semana 1  →  WebGoat (OWASP)
+             docker run -d -p 8080:8080 webgoat/goat-and-wolf
+             http://localhost:8080/WebGoat
+
+Semana 2  →  OWASP Top 10
+             https://owasp.org/www-project-top-ten
+
+Mes 2     →  TryHackMe.com — plataforma gamificada para principiantes
+```
+
+> Solo atacás entornos diseñados para ello o con permiso explícito. Sin permiso es delito.
 
 ---
 
@@ -95,23 +163,22 @@
 - `required: true` no `require: true` en Schema de Mongoose
 - `dotenv.config()` siempre antes de cualquier `process.env`
 - `export default` → importar sin llaves | `export const` → importar con llaves
-- No pasar req.body directo a findByIdAndUpdate 
-  → extraer solo los campos necesarios para evitar inyección de campos maliciosos 
-  const { projectName, clientName, description } = req.body;
-await Project.findByIdAndUpdate(id, { projectName, clientName, description });
-
----
-
-## 🔄 Preguntas abiertas
-- *(vacío por ahora)*
+- El `return` en `res.status(404).json()` es obligatorio — sin él Express sigue ejecutando
+- Nombres de métodos deben describir lo que hacen: `getProjectById` no `createProjectById`
+- No pasar `req.body` directo a `findByIdAndUpdate` → extraer solo los campos necesarios
+- Dos `res.send()` en el mismo handler rompe la app silenciosamente
+- Bug de Postman: cambios sin guardar en una request pueden hacer que envíe el verbo equivocado
+- Cuando el código parece correcto, el problema puede estar en la herramienta (Postman, nodemon, etc.)
 
 ---
 
 ## 📝 Notas del tutor
-- Sección 27 videos 460-463 son CRUD restante — patrón repetitivo, buenos para acelerar
-- Sección 28 replica todo el patrón de sección 27 pero para Tareas — va a fluir más rápido
+- Sección 28 replica el patrón de sección 27 para Tareas — va a fluir mucho más rápido
+- Víctor ya internalizó el patrón CRUD completo — puede anticipar el código antes de verlo
 - Sección 29 es territorio nuevo (React) — bajar el ritmo y consolidar bien
+- Víctor responde bien a preguntas de cierre — seguir con ese formato
 - El método de notas en código es pedagógicamente sólido — mantenerlo
+- Víctor probó la vulnerabilidad Mass Assignment por su cuenta — buen nivel de curiosidad técnica
 
 ---
-*Última actualización: Sesión del 12/06/2026 — Video 459 completado*
+*Última actualización: Sesión del 18/06/2026 — Sección 27 completa. Videos 460-463 completados. CRUD de Proyectos terminado.*
