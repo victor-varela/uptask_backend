@@ -41,6 +41,15 @@ router.put(
   handlerInputErrors,
   ProjectController.updateProject,
 );
+
+//Eliminar un Proyecto
+router.delete(
+  "/:id",
+  param("id").isMongoId().withMessage("Id no valido"),
+  handlerInputErrors,
+  ProjectController.deleteProject,
+);
+
 export default router;
 
 /**
@@ -80,5 +89,7 @@ export default router;
    getAllProjects no tiene validacion porque es solamente visitar la URL y traer todos los proyectos.
 
    getProjectById SI tiene validacion porque MongoDb nos da objectId que son un formato especifico de la plataforma. Express validator ya tiene incorporado un metodo para validar los ids de mongo db ( isMongoDbId o algo asi jejej que facil) --> entonces usamos ese metodo para validar porque sino nos pasan cualquier cosa por url y la app revienta. Y esa validacion va en el router obviamente.
+
+   El router es quien recibe las peticiones HTTP y DIRIGE EL FLUJO DE LA APP.. ---ACA ESTA EL CRUD--- 
  *
  */

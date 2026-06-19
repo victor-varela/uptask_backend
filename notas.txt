@@ -173,3 +173,17 @@ router.post("/", validateProject, ProjectController.createProject)
 El profe eligió el Router porque es la forma más directa y clara para aprender. En proyectos más grandes se suele mover a middlewares separados para no repetir código.
 
 Creamos carpeta middleware en src/ validation.ts --> este es el que maneja los posibles errores, sin esta funcion validator no hace nada. Esta funcion va ANTES del controller en el router.
+
+Cliente (Postman/React)
+        ↓  petición
+     Endpoint (/api/projects)
+        ↓
+      Router (GET, POST, PUT, DELETE)
+        ↓
+    Controller (lógica)
+        ↓
+       DB (MongoDB)
+        ↓
+    Controller (arma la respuesta)
+        ↓
+Cliente recibe JSON

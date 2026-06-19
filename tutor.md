@@ -95,6 +95,10 @@
 - `required: true` no `require: true` en Schema de Mongoose
 - `dotenv.config()` siempre antes de cualquier `process.env`
 - `export default` → importar sin llaves | `export const` → importar con llaves
+- No pasar req.body directo a findByIdAndUpdate 
+  → extraer solo los campos necesarios para evitar inyección de campos maliciosos 
+  const { projectName, clientName, description } = req.body;
+await Project.findByIdAndUpdate(id, { projectName, clientName, description });
 
 ---
 

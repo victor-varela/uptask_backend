@@ -34,8 +34,12 @@ export class ProjectController {
     //Similar a getProjectById (requerimos leer el id)
     const { id } = req.params;
     try {
-      //primero econtramos y actualizamos despues guardamos
-      const project = await Project.findByIdAndUpdate(id, req.body);
+      //primero econtramos y actualizamos despues guardamos. Enviamos SOLO lo que PERMITIMOS ENVIAR. -
+      // Evitar Mass Assigment-
+
+      //Extraemos lo que PERMITIMOS enviar a la DB
+      const { projectName, clientName, description } = req.body;
+      const project = await Project.findByIdAndUpdate(id, { projectName, clientName, description });
       //Si no hay proyecto RETORNAMOS
       if (!project) {
         const error = new Error("Proyecto no encontrado");
@@ -59,6 +63,30 @@ export class ProjectController {
       //Despues lo guardamos
       await project.save();
       res.send("Proyecto creado correctamente...");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //Eliminar un Proyecto
+  static deleteProject = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+      const project = await Project.findById(id); //no usamos el metodo findByIdandDelete de mongoose porque PRIMERO debemos hacer verificaciones
+
+      //Aseguramos que el proyecto exista sino RETORNAMOS
+      if (!project) {
+        const error = new Error("Proyecto no encontrado");
+        return res.status(404).send({ error: error.message });
+      }
+
+      //Aca van verificaciones previas a eliminar: si user tiene los permisos, etc..
+
+      // aca obtenemos los campos manualmente
+
+      await project.deleteOne();
+      res.send("Proyecto Eliminado");
     } catch (error) {
       console.log(error);
     }
@@ -92,4 +120,6 @@ export class ProjectController {
                       res.json({ message: "Proyecto creado correctamente" });
                     };
  *
+
+ En el ROUTER esta el inicio del CRUD, ACA en controller esta la LOGICA-- ROUTER -> RUtea | Controller -> Ejecuta logica
  */
