@@ -1,11 +1,25 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 
+//creamos este objeto antes del interface para que lo pueda leer el compilador. el as const al final es para que las propiedades sean readonly y eso protege que no se modifiquen.. es un 'diccionario'
+const taskStatus = {
+  PENDING: "pending",
+  ON_HOLD: "onHold",
+  IN_PROGRESS: "inProgress",
+  UNDER_REVIEW: "underReview",
+  COMPLETED: "completed",
+} as const;
+
+//creamos el type-- es export porque seguramente lo usemos en otro archivo. Aca me confunde porque el keyof creo que es para la parte izquierda del objeto taskStatus lo que esta en mayuscula y el codigo hace que se tome la parte derecha. Para mi, las key son la parte izquierda y los values la derecha. Por que no se hace de una sola vez ? porque es un objeto con los valores ya definidos, no van a cambiar.
+export type TaskStatus = (typeof taskStatus)[keyof typeof taskStatus];
+
 //1- Creamos el Type o Interface
 export interface ITask extends Document {
   name: string;
   description: string;
   //asginamos un proyecto a cada tarea. Aca le asignamos el tpye a ese proyecto.-> objectId (que viene de monggose ya que es unico y lo crea directamente mongoose, lo ves en mongoDb compass)
   project: Types.ObjectId;
+  //asignamos un status a cada tarea con su type ya creado
+  status: TaskStatus;
 }
 
 //Se vana agregar mas campos al modelo como project para saber a que proyecto pertenece cada tarea y tal vez otros campos mas.
@@ -27,6 +41,12 @@ export const TaskSchema = new Schema(
     project: {
       type: Types.ObjectId,
       ref: "Project",
+    },
+    //agregamos el campo status en el schema.
+    status: {
+      type: String,
+      enum: Object.values(taskStatus),
+      default: taskStatus.PENDING,
     },
   },
   { timestamps: true },
@@ -66,7 +86,22 @@ export default Task;
  * ref: 'project'
  * }
  *
- *
+ *  STATUS DE TAREAS:
+ *  typeof   →  dame el tipo del objeto
+    keyof    →  dame las keys de ese tipo
+    [keyof]  →  usá esas keys para acceder a los values
+
+ // TRUCO DE TS PARA OBTENER LOS VALUES DE UN OBJETO:
+// typeof taskStatus          → devuelve el objeto COMPLETO con sus propiedades readonly
+// keyof typeof taskStatus    → devuelve las KEYS del objeto: "PENDING" | "ON_HOLD" | ...
+// (typeof taskStatus)[keyof typeof taskStatus] → usa las keys para acceder a los VALUES: "pending" | "onHold" | ...
+//
+// ¿Por qué no escribir los values directamente como union type?
+// type TaskStatus = "pending" | "onHold" | ...  ← funciona pero duplica la info
+// Si agregás un status nuevo, tendrías que cambiarlo en DOS lugares (objeto + type)
+// Con este truco el type se deriva AUTOMATICAMENTE del objeto → cambiás solo el objeto
+//
+// TIP: hoverear sobre el type en VSCode con intellisense muestra exactamente qué contiene
  *
  *
  *
