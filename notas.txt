@@ -188,4 +188,29 @@ Cliente (Postman/React)
         ↓
 Cliente recibe JSON
 
-16- Agregamos el modelo de Tareas. Esta app es de proyectos que se le agregan tareas. Al igual que el modelo de Project, creamos archivo en /models/Task.ts y ahi creamos el Schema.
+16-Creamos MODELO DE TAREAS Y CONEXIÓN PROJECT-TASK
+
+   Creamos /models/Task.ts con su Schema, Interface y Modelo (mismo patrón que Project).
+   
+   CAMPOS DEL MODELO TASK:
+   - name, description (básicos)
+   - project: Types.ObjectId  → referencia al proyecto al que pertenece
+   - status: TaskStatus       → estado de la tarea (pending, onHold, inProgress, underReview, completed)
+
+   STATUS DE TAREAS:
+   Se crea un objeto 'diccionario' readonly (as const) con los posibles estados.
+   Luego se deriva el type automáticamente con un truco de TS:
+   type TaskStatus = (typeof taskStatus)[keyof typeof taskStatus]
+   → así si se agrega un status nuevo, solo se modifica el objeto y el type se actualiza solo.
+
+   CONECTAR TASK CON PROJECT (lo más importante):
+   Una tarea pertenece a UN proyecto. Un proyecto puede tener MUCHAS tareas.
+   
+   En Task.ts    → se agrega campo 'project' con ref: 'Project'  (tarea apunta a su proyecto)
+   En Project.ts → se agrega campo 'tasks[]' con ref: 'Task'     (proyecto apunta a sus tareas)
+   
+   El type de tasks en Project usa PopulatedDoc<ITask & Document>[] porque
+   Mongoose puede devolver ese campo como array de IDs O como objetos completos
+   y TypeScript necesita saber que los dos casos son válidos.
+
+17- Creamos las tareas: lo hacemos desde el router projectRoutes porque cada tarea esta ASOCIADA a un Project.Creamos un arhcivo dentro de controllers para TaskController porque esto sí es diferente. 
