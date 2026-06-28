@@ -79,7 +79,7 @@ export default Project;
 
   En realidad la diferencia entre type e interface en este caso es porque se podria mas adelante agregar un campo al modelo Task, por ejemplo: projectId (para asociar a cada tarea con su proyecto), SIN NECESIDAD DE VOLVER AL ARCHIVO TASK EN /MODELS/TASK .. con interface se puede hacer directamente en un archivo importado. Lo cual tiene ventajas y desventajas. No tener que 'tocar' otra vez el modelo en el archivo original puede ser bueno pero tambien puede causar confusion si otro dev ve el modelo en el archivo original y luego ve que en otro archivo se le agrega otro campo. Por eso en apps propias la convencion es modificar el archivo original 
 directamente. La extension desde afuera es mas util en librerias que 
-otros desarrolladores consumen.
+otros desarrolladores consumen. Finalmente el profe agrego task en este archivo-- : (
 
  == CONECTAR PROYECTO CON TAREAS:
    
@@ -96,5 +96,12 @@ otros desarrolladores consumen.
 
     == pregunta a claude: Tanto en project como en task el type del schema es objectId--- es lo que relaciona a un proyecto cada cosa, es asi?? Revisa mis notas y haz las correcciones. Como es bien el problema de subdocumentos y que hace el codigo populatedDoc para arreglarlo? ese type es nuevo para mi
 
+    // TODO: entender mejor cuando usar type / interface
+// RESUELTO: 
+// type    → tipos simples, uniones, tipos inferidos
+// interface → objetos que extienden otras clases (Mongoose, Express Request)
+//             o que necesitan crecer sin perder propiedades existentes
+// En apps propias → modificar el archivo original directamente
+// En librerías   → extender desde afuera con interface
 
  */

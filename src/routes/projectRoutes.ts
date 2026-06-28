@@ -3,6 +3,7 @@ import { body, param } from "express-validator";
 import { ProjectController } from "../controllers/ProjectController";
 import { handlerInputErrors } from "../middleware/validation";
 import { TaskController } from "../controllers/TaskController";
+import { validateProject } from "../middleware/project";
 
 //Instaciamos Router de express
 const router = Router();
@@ -53,7 +54,17 @@ router.delete(
 
 //Router for Tasks
 
-router.post("/:projectId/task", TaskController.createTask);
+router.post(
+  "/:projectId/task",
+  //primero validamos si existe el project
+  validateProject,
+
+  //validamos la entrada de datos del cliente
+  body("name").notEmpty().withMessage("El nombre de la tarea es obligatorio"),
+  body("description").notEmpty().withMessage("La descripcion de la tarea es obligatorio"),
+  handlerInputErrors,
+  TaskController.createTask,
+);
 
 export default router;
 

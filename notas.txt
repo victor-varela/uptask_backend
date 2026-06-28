@@ -214,3 +214,5 @@ Cliente recibe JSON
    y TypeScript necesita saber que los dos casos son válidos.
 
 17- Creamos las tareas: lo hacemos desde el router projectRoutes porque cada tarea esta ASOCIADA a un Project.Creamos un arhcivo dentro de controllers para TaskController porque esto sí es diferente. 
+
+En POSTMAN, agrupamos los request por su nombre con mayusculas - PROJECT-/ TASK- para mejor orden.
