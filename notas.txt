@@ -216,3 +216,8 @@ Cliente recibe JSON
 17- Creamos las tareas: lo hacemos desde el router projectRoutes porque cada tarea esta ASOCIADA a un Project.Creamos un arhcivo dentro de controllers para TaskController porque esto sí es diferente. 
 
 En POSTMAN, agrupamos los request por su nombre con mayusculas - PROJECT-/ TASK- para mejor orden.
+
+18- Creamos endpoint para Obtener las tareas. Pero este endpoint le falta incluir los 'detalles' del proyecto al cual pertenecen. Si ves en las tareas en project le asignamos un Id no mas que eso. Nos faltan los detalles del proyecto nombre, description, etc... pero para hacerlo usamos algo que se llama POPULATE de mongoose. Es poblacion? | esto es como un JOIN en SQL| 
+
+18- Traemos los 'detalles' del proyecto al que pertenecen las tareas. Aplicamos .populte en el findbyId de obtener tareas.
+19- Actualizamos endpoint de obtener proyecto por Id y le INCLUIMOS las tareas aplicando .populate en el findbyId de getProjectById

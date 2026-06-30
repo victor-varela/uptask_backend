@@ -54,6 +54,7 @@ router.delete(
 
 //Router for Tasks
 
+//Crear tarea
 router.post(
   "/:projectId/task",
   //primero validamos si existe el project
@@ -66,6 +67,14 @@ router.post(
   TaskController.createTask,
 );
 
+//Obtener Tareas
+
+router.get(
+  "/:projectId/task",
+  //validamos si existe el proyecto- Ojo no validamos el param(id).isMongoId()// TODO
+  validateProject,
+  TaskController.getProjectTasks,
+);
 export default router;
 
 /**

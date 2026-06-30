@@ -5,10 +5,11 @@
 
 ## 📌 Instrucciones de uso
 
-1. **Al iniciar sesión** → pegá este archivo completo en el chat
+1. **Al iniciar sesión** → pegá este archivo + respondé la pregunta de retención de 24h
 2. **Al terminar sesión** → pedile al tutor que actualice el archivo y reemplazá el contenido
-3. **Cuando tenés una duda** → pegá el código + describí el error o la pregunta
+3. **Cuando tenés una duda** → intentá resolverla 5 min solo antes de preguntar
 4. **Cuando terminás un video** → avisá el número y el tutor te hace la pregunta de cierre
+5. **TODO** → para dudas que no bloquean el avance, seguís sin detenerte
 
 ---
 
@@ -21,19 +22,105 @@
 ---
 
 ## 📚 Método de estudio acordado
+
+### Ritual de cada sesión
+
+**INICIO (5 min)**
+- Pegás el TUTOR.md
+- Respondés la pregunta de retención del video anterior (sin ver el código)
+- Arrancás el video nuevo
+
+**DURANTE el video**
 1. Ver video completo **sin tocar el teclado**
 2. Cerrar el video y **reproducir de memoria** en VSCode
-3. **Escribir notas/comentarios** en el código mientras codificás
-4. **Consultarme dudas** para cerrar conceptos
-5. **Pregunta de cierre** al terminar cada video para verificar comprensión
+3. **Pseudocódigo primero** — comentarios con los pasos antes del código
+4. **Escribir notas/comentarios** en el código mientras codificás
+5. **TODO** para dudas que no bloquean el avance
+6. Consultar al tutor solo si bloqueaste más de 5 min
+
+**CIERRE (5 min)**
+- Pregunta de cierre del video
+- Completar el tracking de sesión
+- Pedir actualización del TUTOR.md
+
+---
+
+## 📊 Sistema de medición — 5 parámetros
+
+### Lo que medimos
+```
+1. Retención      → ¿podés reproducir el código sin ver el video?
+2. Comprensión    → ¿podés explicar el por qué, no solo el cómo?
+3. Transferencia  → ¿podés aplicar el concepto en un contexto nuevo?
+4. Velocidad      → ¿cuánto tardás por video con el tiempo?
+5. Autonomía      → ¿cada vez necesitás menos ayuda para resolver errores?
+```
+
+### Lo que debés hacer vos para cada parámetro
+
+**RETENCIÓN**
+- No repasar el código antes de la pregunta de 24h
+- Si no recordás algo, lo marcás — no lo buscás de inmediato
+- El esfuerzo de recordar ES el aprendizaje
+
+**COMPRENSIÓN**
+- Siempre preguntarte "¿por qué?" antes de "¿cómo?"
+- Antes de escribir código, decir en voz alta qué va a hacer
+- Si no podés explicarlo simple, no lo entendiste todavía
+
+**TRANSFERENCIA**
+- Cuando aprendés algo nuevo, conectarlo con algo anterior
+- Preguntarte "¿dónde más aplica esto?"
+
+**VELOCIDAD**
+- No quedarte más de 10 minutos trabado en algo → TODO y seguís
+- El objetivo no es terminar rápido sino no quedarse paralizado
+
+**AUTONOMÍA**
+- Antes de preguntarme, intentar resolver el error solo 5 minutos
+- Leer el mensaje de error completo antes de buscar ayuda
+- Cuando resolvés algo solo, anotarlo — eso es evidencia de autonomía
+
+### Cuándo medir retención
+```
+Inmediata  → pregunta de cierre al terminar el video
+24-48h     → pregunta al inicio de la sesión siguiente
+7 días     → pregunta sorpresa de concepto de esa semana
+30 días    → al terminar sección, reproducir patrón completo de memoria
+```
+
+### Tracking de sesión
+```
+## 📊 Última sesión
+- Fecha:
+- Videos completados:
+- Pregunta retención 24h: ✅/❌/parcial
+- Preguntas cierre bien respondidas: /
+- Dudas bloqueantes:
+- TODOs agregados:
+- Retención (1-5):
+- Comprensión (1-5):
+- Autonomía (1-5):
+```
+
+### Tendencia actual
+```
+Velocidad      → subiendo ✅ (2 → 4 → 9 videos por sesión)
+Autonomía      → subiendo ✅ (cada vez resolvés más antes de preguntar)
+Comprensión    → alta ✅ (preguntás el por qué, no solo el cómo)
+Transferencia  → apareciendo ✅ (conectaste Covey con pseudocódigo solo)
+Retención      → señal positiva ✅ (tras 2 meses recordaste el flujo completo)
+```
 
 ---
 
 ## 📍 Progreso actual
 - **Sección activa:** 28 — UpTask: Tareas - Modelos, rutas y controllers
-- **Último video completado:** 463 — Creando el Endpoint para eliminar un proyecto
-- **Próximo video:** 464 (primer video sección 28)
+- **Último video completado:** 472
+- **Próximo video:** 473
+- **Pregunta de retención para próxima sesión:** ¿Qué diferencia hay entre `Promise.all` y `Promise.allSettled` y cuándo usarías cada uno?
 - **Sección 27:** ✅ COMPLETA
+- **Sección 28:** 🔄 En curso
 
 ---
 
@@ -43,12 +130,10 @@
 |---------|------|--------|-----------------|
 | 26 | UpTask - Primeros pasos backend | ✅ Completa | ✅ Total |
 | 27 | Proyectos - Modelos, rutas y controllers | ✅ Completa | ✅ Total |
-| 28 | Tareas - Modelos, rutas y controllers | 🔄 Siguiente | ✅ Total — mismo patrón que sección 27 |
+| 28 | Tareas - Modelos, rutas y controllers | 🔄 En curso | ✅ Total |
 | 29 | Frontend - Primeros pasos | ⏳ Pendiente | ✅ Total — React + Vite + TypeScript |
 | 30 | Frontend - Creando Proyectos | ⏳ Pendiente | ✅ Total — React Query, formularios |
 | 31+ | Autenticación, Tareas frontend, etc. | ⏳ Pendiente | ⚠️ Actualizar cuando lleguemos |
-
-> **Nota:** Actualizar alineación del tutor a partir de sección 31 cuando se acerque.
 
 ---
 
@@ -69,6 +154,7 @@
 - `req.body`, `req.params`, `req.query`
 - `res.json()` vs `res.send()`
 - Status codes: 200 (ok), 201 (creado), 400 (datos inválidos), 404 (no encontrado), 500 (error servidor)
+- Nested routes: `/api/projects/:projectId/tasks` para expresar relaciones entre recursos
 
 ### Mongoose / MongoDB
 - MongoDB = NoSQL, documentos JSON (vs PostgreSQL = SQL, tablas)
@@ -80,29 +166,48 @@
 - `project.save()` — guarda un documento nuevo o actualizado
 - `Project.findByIdAndUpdate(id, data)` — encuentra y actualiza en un paso
 - `project.deleteOne()` — elimina el documento encontrado
-- Mongoose ignora campos no definidos en el Schema — primera línea de defensa contra Mass Assignment
+- Mongoose ignora campos no definidos en el Schema — primera línea de defensa
 - Patrón de dos pasos para delete: `findById()` → verificaciones → `deleteOne()`
+- Normalización: guardar IDs en lugar de objetos completos evita inconsistencias
+- `project.tasks.push(task._id)` → relación bidireccional
+- `PopulatedDoc<ITask & Document>[]` → type para arrays que pueden ser IDs u objetos completos
 
 ### TypeScript
 - `_req` cuando el parámetro existe pero no se usa (convención)
 - `import type` para importar solo tipos sin código en runtime
+- `type` → tipos simples, uniones, tipos inferidos
+- `interface` → objetos que extienden clases, estructuras que pueden crecer sin perder propiedades
+- `as const` → hace las propiedades readonly
+- Truco para obtener values de un objeto:
+  ```typescript
+  type TaskStatus = (typeof taskStatus)[keyof typeof taskStatus]
+  ```
+- `declare global { namespace Express { interface Request { project: IProject } } }`
+  → extiende Request de Express sin perder sus propiedades originales
+  → usa interface porque permite SUMAR propiedades sin borrar las existentes
 
 ### Express Validator
-- `body()` — valida campos del body (POST/PUT)
-- `param()` — valida parámetros de la URL (GET/PUT/DELETE /:id)
-- `param("id").isMongoId()` — valida formato válido de MongoDB
-- `validationResult(req)` — lee los errores anotados
+- `body()` — valida campos del body
+- `param()` — valida parámetros de la URL
+- `param("id").isMongoId()` — valida formato MongoDB
 - `handlerInputErrors` — middleware guardián que corta si hay errores
-- Orden en router: `body()/param()` → `handlerInputErrors` → `controller`
-- Sin `handlerInputErrors` la validación no vale de nada
+- Orden: `validateProject` → `body()/param()` → `handlerInputErrors` → `controller`
+- Verificar primero lo más bloqueante — si el proyecto no existe, nada más importa
 
-### Arquitectura MVC — Patrón del proyecto
-- Un Router por recurso (projects, users, tasks)
-- Un Controller por recurso con métodos estáticos
-- Un modelo por recurso
-- Métodos estáticos = no necesitás instanciar la clase para usarlos
-- Flujo de un endpoint: Recibir (req) → Procesar (DB) → Devolver (res)
-- Router → rutea | Controller → ejecuta lógica
+### Middleware custom
+- `validateProject` — verifica que el proyecto existe y lo agrega al `req`
+- Patrón: buscar en DB → validar → asignar a `req` → `next()`
+- Permite compartir datos entre middlewares via `req` sin repetir código
+
+### Promises
+- `Promise.all` → operaciones que dependen entre sí → falla una → catch automático
+- `Promise.allSettled` → operaciones independientes → falla una → NO catch, revisás manualmente
+  ```typescript
+  const results = await Promise.allSettled([op1(), op2()]);
+  const hasFailed = results.some(r => r.status === 'rejected');
+  if (hasFailed) return res.status(500).json({ error: "Error al guardar" });
+  res.send("Ok");
+  ```
 
 ### CRUD completo de Proyectos (Sección 27)
 ```
@@ -113,72 +218,65 @@ PUT    /api/projects/:id  → updateProject   → Project.findByIdAndUpdate(id, 
 DELETE /api/projects/:id  → deleteProject   → findById() + verificaciones + deleteOne()
 ```
 
----
-
-## 🔒 Seguridad Web — Conceptos aprendidos
-
-### Mass Assignment Vulnerability
-- Pasar `req.body` directo a `findByIdAndUpdate` permite inyectar campos extra
-- Solución: extraer solo los campos necesarios
-```typescript
-const { projectName, clientName, description } = req.body;
-await Project.findByIdAndUpdate(id, { projectName, clientName, description });
+### CRUD Tareas (Sección 28 — en curso)
 ```
-- Mongoose filtra campos no definidos en el Schema — pero no es suficiente cuando el Schema crece
-
-### CORS
-- Bloquea peticiones desde navegadores de dominios no autorizados
-- NO protege contra curl, Postman o scripts — esos ignoran CORS
-- La seguridad siempre va en el backend, nunca en el frontend
-
-### Autorización
-- No basta con que el ID exista para eliminar/modificar un recurso
-- Patrón: findById() → ¿tenés permiso? → operación
-- `findByIdAndDelete()` saltea verificaciones — peligroso en API pública
-
-### Regla de oro
-> La seguridad siempre va en el backend. El frontend es comodidad para el usuario, nunca una barrera de seguridad.
+POST /api/projects/:projectId/tasks → createTask → validateProject + new Task + save()
+```
 
 ---
 
-## 🎯 Path de Hacking Ético — Para explorar después del curso
+## 🔒 Seguridad Web
 
+- Mass Assignment: no pasar `req.body` directo → extraer solo los campos necesarios
+- CORS: protege navegadores, NO protege curl/Postman/scripts
+- Autorización: findById() → verificar permisos → operación
+- Regla de oro: la seguridad siempre en el backend
+
+---
+
+## 🎯 Path de Hacking Ético — Para después del curso
 ```
-Semana 1  →  WebGoat (OWASP)
-             docker run -d -p 8080:8080 webgoat/goat-and-wolf
-             http://localhost:8080/WebGoat
-
-Semana 2  →  OWASP Top 10
-             https://owasp.org/www-project-top-ten
-
-Mes 2     →  TryHackMe.com — plataforma gamificada para principiantes
+Semana 1  →  WebGoat: docker run -d -p 8080:8080 webgoat/goat-and-wolf
+Semana 2  →  OWASP Top 10: https://owasp.org/www-project-top-ten
+Mes 2     →  TryHackMe.com
 ```
-
-> Solo atacás entornos diseñados para ello o con permiso explícito. Sin permiso es delito.
 
 ---
 
 ## ⚠️ Errores comunes a recordar
-- `.env` debe estar en la raíz del proyecto (mismo nivel que `package.json`)
-- `required: true` no `require: true` en Schema de Mongoose
-- `dotenv.config()` siempre antes de cualquier `process.env`
-- `export default` → importar sin llaves | `export const` → importar con llaves
-- El `return` en `res.status(404).json()` es obligatorio — sin él Express sigue ejecutando
-- Nombres de métodos deben describir lo que hacen: `getProjectById` no `createProjectById`
-- No pasar `req.body` directo a `findByIdAndUpdate` → extraer solo los campos necesarios
-- Dos `res.send()` en el mismo handler rompe la app silenciosamente
-- Bug de Postman: cambios sin guardar en una request pueden hacer que envíe el verbo equivocado
-- Cuando el código parece correcto, el problema puede estar en la herramienta (Postman, nodemon, etc.)
+- `.env` al mismo nivel que `package.json`
+- `required: true` no `require: true` en Schema
+- `dotenv.config()` siempre antes de `process.env`
+- `export default` → sin llaves | `export const` → con llaves
+- El `return` en `res.status(404)` es obligatorio
+- No pasar `req.body` directo a `findByIdAndUpdate`
+- Dos `res.send()` en el mismo handler rompe la app
+- Bug de Postman: guardar requests antes de cambiar de pestaña
+- `Promise.allSettled` no va al catch si falla
+- Orden en router de tareas: `validateProject` ANTES de `body()`
 
 ---
 
 ## 📝 Notas del tutor
-- Sección 28 replica el patrón de sección 27 para Tareas — va a fluir mucho más rápido
-- Víctor ya internalizó el patrón CRUD completo — puede anticipar el código antes de verlo
+- Víctor captó Promise.all vs allSettled desde la transcripción del profe — buena autonomía
+- El debate type/interface quedó cerrado con el caso real de `declare global`
+- Método de pseudocódigo incorporado — aplicarlo en cada función nueva
+- Covey Hábito 2 conectado con pseudocódigo — pensamiento de alto nivel
 - Sección 29 es territorio nuevo (React) — bajar el ritmo y consolidar bien
-- Víctor responde bien a preguntas de cierre — seguir con ese formato
-- El método de notas en código es pedagógicamente sólido — mantenerlo
-- Víctor probó la vulnerabilidad Mass Assignment por su cuenta — buen nivel de curiosidad técnica
 
 ---
-*Última actualización: Sesión del 18/06/2026 — Sección 27 completa. Videos 460-463 completados. CRUD de Proyectos terminado.*
+*Última actualización: Sesión del 29/06/2026 — Videos 464-472 completados. Sistema de medición incorporado.*
+
+---
+
+## 📊 Historial de sesiones
+
+### Sesión 29/06/2026
+- Videos completados: 1 (473)
+- Pregunta retención 24h: no aplicó — primer uso del sistema
+- Preguntas cierre bien respondidas: 2/2
+- Dudas bloqueantes: 0
+- TODOs agregados: 0
+- Retención: 3/5 (confusión en el modelo)
+- Comprensión: 5/5
+- Autonomía: 5/5 ⭐ — resolvió confusión getTasks solo

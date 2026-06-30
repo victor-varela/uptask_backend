@@ -29,6 +29,16 @@ export class TaskController {
       console.log(error);
     }
   };
+  static getProjectTasks = async (req: Request, res: Response) => {
+    try {
+      //buscamos las tareas que PERTENEZCAN al Proyecto.
+      const tasks = await Task.find({ project: req.project._id }).populate("project"); //esto es sintaxis de mongoose. Para mongoose los objetos (todo es un objeto en Js) SON Las Querys. Le envia un objeto y luego lo interpreta como filtro (por el metodo que usamos .find)- El tema populate es otra cosa.
+
+      res.json(tasks);
+    } catch (error) {
+      res.status(500).json({ error: "Hubo un error" });
+    }
+  };
 }
 
 /**
@@ -92,10 +102,26 @@ if (hasFailed) {
 // Si hasFailed no se cumple → todas las promises funcionaron → respondés al cliente
 res.send("Tarea creada");
  * 
- * 
+ * En obtener tareas me habia confundido, pense en buscar en Project.. nada que ver, hay que buscar las tareas, la semantica ayyuda para eso.. obtener las tareas where project: project.id . EN compass te das cuenta que hay VARIAS tareas con el MISMO projectId eso significa que son de ese UNICO proyecto.. ahi entiendes todo.
  *
+ * Para INCLUIR los detalles del proyecto al que pertenecen las tareas hacemos un populate. Lo importante aca es pasarle a ese populate la REFERENCIA en donde esta la poblacion? de lo que queremos INLCUIR. Esas referencias las declaramos en los MODELOS. Le pasamos el nombre del OBJETO, no el nombre del modelo. EN el modelo esta asi: 
+ *          
+ *          /models/Project.ts
  * 
- * 
+ *            tasks: [
+       {
+         type: Types.ObjectId,
+         ref: "Task",
+       },
+     ],
+   },
+ *     El objeto se llama 'tasks'. Es un array de objetos con un type y un ref definidos. Eso lo lee mongoose y sabe donde esta la referencia. No confundir ref:'Task' con el nombre que pasamos a populae. Lo mismo para el modelo Task.ts
+
+              project: {
+                    type: Types.ObjectId,
+                    ref: "Project",
+                  },
+                  Esto es un objeto que se llama project y es otro objeto con type y ref definidos. Supongo que mongoose en cuanto lee el parametro que tiene el populate busca ese objeto y dentro en ref encuentra los datos y hace el JOIN. En este caso, estamos usando el modelo Task.find --- eso ya le dice mongoose que esta en Task, luego populate('project') -> andá en el campo/objeto project y ahí en ref está lo que tienes que JOIN. 
  * 
  * 
  * 
