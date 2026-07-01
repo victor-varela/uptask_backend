@@ -39,6 +39,32 @@ export class TaskController {
       res.status(500).json({ error: "Hubo un error" });
     }
   };
+
+  static getTaskById = async (req: Request, res: Response) => {
+    try {
+      //capturamos id del param
+      const { taskId } = req.params;
+      //Buscamos la tarea en la DB
+      const task = await Task.findById(taskId);
+      //validamos si existe la tarea
+      if (!task) {
+        const error = new Error("Tarea no encontrada");
+        return res.status(404).json({ error: error.message });
+      }
+
+      //validamos si la tarea corresponde con su respectivo proyecto-> usamos el req.project._id que habiamos hecho en el conjuro. Aplicamos toString para que sea valida la comparacion
+
+      if (task.project.toString() !== req.project._id.toString()) {
+        const error = new Error("Accion no valida");
+        //retornamos- Paramos el codigo- lo botamos al cliente
+        return res.status(400).json({ error: error.message });
+      }
+      //paso la validacion retornamos al cliente la tarea
+      res.json(task);
+    } catch (error) {
+      res.status(500).json({ error: "Hubo un error" });
+    }
+  };
 }
 
 /**
@@ -124,7 +150,7 @@ res.send("Tarea creada");
                   Esto es un objeto que se llama project y es otro objeto con type y ref definidos. Supongo que mongoose en cuanto lee el parametro que tiene el populate busca ese objeto y dentro en ref encuentra los datos y hace el JOIN. En este caso, estamos usando el modelo Task.find --- eso ya le dice mongoose que esta en Task, luego populate('project') -> andá en el campo/objeto project y ahí en ref está lo que tienes que JOIN. 
  * 
  * 
- * 
+    populate("project") le dice a Mongoose: "andá al campo project de este documento, leé su ref interno, y traé el documento     completo desde ese modelo". populate() recibe el nombre del campo en el Schema, no el nombre del modelo. Populate es lo maximo para cruzar documentos, relacionar unos con otros!! 
  * 
  * 
  * 

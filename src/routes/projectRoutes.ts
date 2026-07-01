@@ -54,11 +54,12 @@ router.delete(
 
 //Router for Tasks
 
+//Incorporamos router.param() para evitar duplicacion de codigo | validateProject se necesita en cada enpoint.
+router.param("projectId", validateProject);
 //Crear tarea
 router.post(
   "/:projectId/task",
   //primero validamos si existe el project
-  validateProject,
 
   //validamos la entrada de datos del cliente
   body("name").notEmpty().withMessage("El nombre de la tarea es obligatorio"),
@@ -72,8 +73,16 @@ router.post(
 router.get(
   "/:projectId/task",
   //validamos si existe el proyecto- Ojo no validamos el param(id).isMongoId()// TODO
-  validateProject,
+
   TaskController.getProjectTasks,
+);
+
+//Obtener una tarea por su ID
+router.get(
+  "/:projectId/task/:taskId",
+  param("taskId").isMongoId().withMessage("Id no valido"),
+  handlerInputErrors,
+  TaskController.getTaskById,
 );
 export default router;
 
@@ -116,5 +125,7 @@ export default router;
    getProjectById SI tiene validacion porque MongoDb nos da objectId que son un formato especifico de la plataforma. Express validator ya tiene incorporado un metodo para validar los ids de mongo db ( isMongoDbId o algo asi jejej que facil) --> entonces usamos ese metodo para validar porque sino nos pasan cualquier cosa por url y la app revienta. Y esa validacion va en el router obviamente.
 
    El router es quien recibe las peticiones HTTP y DIRIGE EL FLUJO DE LA APP.. ---ACA ESTA EL CRUD--- 
+
+  El router.param() va antes que todo para que cada vez que el router vea que en paramas esta la variable projectID, ejecute el handler 
  *
  */
