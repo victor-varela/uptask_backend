@@ -58,28 +58,15 @@
 
 ### Lo que debés hacer vos para cada parámetro
 
-**RETENCIÓN**
-- No repasar el código antes de la pregunta de 24h
-- Si no recordás algo, lo marcás — no lo buscás de inmediato
-- El esfuerzo de recordar ES el aprendizaje
+**RETENCIÓN** — No repasar antes de la pregunta de 24h. El esfuerzo de recordar ES el aprendizaje.
 
-**COMPRENSIÓN**
-- Siempre preguntarte "¿por qué?" antes de "¿cómo?"
-- Antes de escribir código, decir en voz alta qué va a hacer
-- Si no podés explicarlo simple, no lo entendiste todavía
+**COMPRENSIÓN** — Siempre preguntarte "¿por qué?" antes de "¿cómo?". Si no podés explicarlo simple, no lo entendiste todavía.
 
-**TRANSFERENCIA**
-- Cuando aprendés algo nuevo, conectarlo con algo anterior
-- Preguntarte "¿dónde más aplica esto?"
+**TRANSFERENCIA** — Cuando aprendés algo nuevo, conectarlo con algo anterior. Preguntarte "¿dónde más aplica esto?"
 
-**VELOCIDAD**
-- No quedarte más de 10 minutos trabado en algo → TODO y seguís
-- El objetivo no es terminar rápido sino no quedarse paralizado
+**VELOCIDAD** — No quedarte más de 10 minutos trabado. TODO y seguís.
 
-**AUTONOMÍA**
-- Antes de preguntarme, intentar resolver el error solo 5 minutos
-- Leer el mensaje de error completo antes de buscar ayuda
-- Cuando resolvés algo solo, anotarlo — eso es evidencia de autonomía
+**AUTONOMÍA** — Intentar resolver el error solo 5 minutos antes de preguntar. Anotar cuando resolvés algo solo.
 
 ### Cuándo medir retención
 ```
@@ -106,19 +93,19 @@ Inmediata  → pregunta de cierre al terminar el video
 ### Tendencia actual
 ```
 Velocidad      → subiendo ✅ (2 → 4 → 9 videos por sesión)
-Autonomía      → subiendo ✅ (cada vez resolvés más antes de preguntar)
-Comprensión    → alta ✅ (preguntás el por qué, no solo el cómo)
-Transferencia  → apareciendo ✅ (conectaste Covey con pseudocódigo solo)
-Retención      → señal positiva ✅ (tras 2 meses recordaste el flujo completo)
+Autonomía      → subiendo ✅ (resuelve antes de preguntar)
+Comprensión    → alta ✅ (pregunta el por qué, no solo el cómo)
+Transferencia  → sólida ✅ (conectó Covey con pseudocódigo, fail-safe con router.param)
+Retención      → 3/5 mejorando con sistema de 24h ✅
 ```
 
 ---
 
 ## 📍 Progreso actual
 - **Sección activa:** 28 — UpTask: Tareas - Modelos, rutas y controllers
-- **Último video completado:** 472
-- **Próximo video:** 473
-- **Pregunta de retención para próxima sesión:** ¿Qué diferencia hay entre `Promise.all` y `Promise.allSettled` y cuándo usarías cada uno?
+- **Último video completado:** 477 — router.param() para evitar código repetido
+- **Próximo video:** 478
+- **Pregunta de retención para próxima sesión:** ¿Qué hace `router.param()` y qué ventaja de seguridad tiene sobre poner `validateProject` manualmente en cada endpoint?
 - **Sección 27:** ✅ COMPLETA
 - **Sección 28:** 🔄 En curso
 
@@ -153,84 +140,79 @@ Retención      → señal positiva ✅ (tras 2 meses recordaste el flujo comple
 - `req` = leer lo que llega | `res` = escribir lo que devolvés
 - `req.body`, `req.params`, `req.query`
 - `res.json()` vs `res.send()`
-- Status codes: 200 (ok), 201 (creado), 400 (datos inválidos), 404 (no encontrado), 500 (error servidor)
-- Nested routes: `/api/projects/:projectId/tasks` para expresar relaciones entre recursos
+- Status codes: 200, 201, 400, 404, 500
+- Nested routes: `/api/projects/:projectId/tasks`
+- `router.param("projectId", validateProject)` → ejecuta middleware automáticamente cuando el param aparece en la URL — seguridad por defecto (*fail-safe defaults*)
 
 ### Mongoose / MongoDB
-- MongoDB = NoSQL, documentos JSON (vs PostgreSQL = SQL, tablas)
+- MongoDB = NoSQL, documentos JSON
 - Mongoose = ODM (Object Document Mapper)
 - Schema = define la estructura | Modelo = conecta schema con la colección
-- `required: true` (NO `require: true`) — typo silencioso a evitar
-- `Project.find({})` — trae todos los documentos
-- `Project.findById(id)` — trae uno por ID, devuelve `null` si no existe
-- `project.save()` — guarda un documento nuevo o actualizado
-- `Project.findByIdAndUpdate(id, data)` — encuentra y actualiza en un paso
-- `project.deleteOne()` — elimina el documento encontrado
-- Mongoose ignora campos no definidos en el Schema — primera línea de defensa
-- Patrón de dos pasos para delete: `findById()` → verificaciones → `deleteOne()`
-- Normalización: guardar IDs en lugar de objetos completos evita inconsistencias
+- `required: true` (NO `require: true`)
+- `Project.find({})` — los objetos JS son las queries en Mongoose
+- `Project.findById(id)`
+- `project.save()`, `project.deleteOne()`
+- `Project.findByIdAndUpdate(id, data)`
+- Normalización: guardar IDs en lugar de objetos completos
 - `project.tasks.push(task._id)` → relación bidireccional
-- `PopulatedDoc<ITask & Document>[]` → type para arrays que pueden ser IDs u objetos completos
+- `PopulatedDoc<ITask & Document>[]`
+- `.populate("campo")` → equivalente al JOIN de SQL, trae el documento completo usando el `ref` del Schema. Recibe el nombre del CAMPO, no del modelo
+- Integridad referencial: MongoDB no la garantiza automáticamente — el código debe mantenerla
+- ObjectId vs String: comparar siempre con `.toString()` o `.equals()`
+- OJO: borrar y recrear data de prueba en Postman cuando se cambia el Schema
 
 ### TypeScript
-- `_req` cuando el parámetro existe pero no se usa (convención)
-- `import type` para importar solo tipos sin código en runtime
 - `type` → tipos simples, uniones, tipos inferidos
-- `interface` → objetos que extienden clases, estructuras que pueden crecer sin perder propiedades
-- `as const` → hace las propiedades readonly
-- Truco para obtener values de un objeto:
-  ```typescript
-  type TaskStatus = (typeof taskStatus)[keyof typeof taskStatus]
-  ```
-- `declare global { namespace Express { interface Request { project: IProject } } }`
-  → extiende Request de Express sin perder sus propiedades originales
-  → usa interface porque permite SUMAR propiedades sin borrar las existentes
+- `interface` → objetos que extienden clases, estructuras que pueden crecer
+- `as const` → propiedades readonly
+- Truco values de objeto: `type T = (typeof obj)[keyof typeof obj]`
+- `declare global { namespace Express { interface Request { project: IProject } } }` → extiende Request sin perder propiedades
 
 ### Express Validator
-- `body()` — valida campos del body
-- `param()` — valida parámetros de la URL
-- `param("id").isMongoId()` — valida formato MongoDB
-- `handlerInputErrors` — middleware guardián que corta si hay errores
-- Orden: `validateProject` → `body()/param()` → `handlerInputErrors` → `controller`
-- Verificar primero lo más bloqueante — si el proyecto no existe, nada más importa
+- `body()`, `param()`, `param("id").isMongoId()`
+- `handlerInputErrors` — corta si hay errores
+- Orden: `router.param()` → validaciones → `handlerInputErrors` → controller
+- Verificar primero lo más bloqueante
 
 ### Middleware custom
 - `validateProject` — verifica que el proyecto existe y lo agrega al `req`
-- Patrón: buscar en DB → validar → asignar a `req` → `next()`
-- Permite compartir datos entre middlewares via `req` sin repetir código
+- `router.param("projectId", validateProject)` — evita repetición, seguridad por defecto
 
 ### Promises
-- `Promise.all` → operaciones que dependen entre sí → falla una → catch automático
-- `Promise.allSettled` → operaciones independientes → falla una → NO catch, revisás manualmente
+- `Promise.all` → dependen entre sí → falla una → catch automático
+- `Promise.allSettled` → independientes → falla una → NO catch
   ```typescript
   const results = await Promise.allSettled([op1(), op2()]);
   const hasFailed = results.some(r => r.status === 'rejected');
-  if (hasFailed) return res.status(500).json({ error: "Error al guardar" });
+  if (hasFailed) return res.status(500).json({ error: "Error" });
   res.send("Ok");
   ```
 
 ### CRUD completo de Proyectos (Sección 27)
 ```
-GET    /api/projects      → getAllProjects   → Project.find({})
-GET    /api/projects/:id  → getProjectById  → Project.findById(id)
-POST   /api/projects      → createProject   → new Project(req.body) + save()
-PUT    /api/projects/:id  → updateProject   → Project.findByIdAndUpdate(id, data)
-DELETE /api/projects/:id  → deleteProject   → findById() + verificaciones + deleteOne()
+GET    /api/projects      → getAllProjects
+GET    /api/projects/:id  → getProjectById + populate("tasks")
+POST   /api/projects      → createProject
+PUT    /api/projects/:id  → updateProject
+DELETE /api/projects/:id  → deleteProject
 ```
 
 ### CRUD Tareas (Sección 28 — en curso)
 ```
-POST /api/projects/:projectId/tasks → createTask → validateProject + new Task + save()
+POST /api/projects/:projectId/tasks          → createTask
+GET  /api/projects/:projectId/tasks          → getProjectTasks + populate("project")
+GET  /api/projects/:projectId/tasks/:taskId  → getTaskById + validación project/task
 ```
 
 ---
 
 ## 🔒 Seguridad Web
 
-- Mass Assignment: no pasar `req.body` directo → extraer solo los campos necesarios
+- Mass Assignment: extraer solo los campos necesarios del body
 - CORS: protege navegadores, NO protege curl/Postman/scripts
 - Autorización: findById() → verificar permisos → operación
-- Regla de oro: la seguridad siempre en el backend
+- Fail-safe defaults: `router.param()` ejecuta validación automáticamente — imposible olvidarse
+- Integridad referencial: borrar via API siempre, no directo en Compass
 
 ---
 
@@ -253,30 +235,33 @@ Mes 2     →  TryHackMe.com
 - Dos `res.send()` en el mismo handler rompe la app
 - Bug de Postman: guardar requests antes de cambiar de pestaña
 - `Promise.allSettled` no va al catch si falla
-- Orden en router de tareas: `validateProject` ANTES de `body()`
-
----
-
-## 📝 Notas del tutor
-- Víctor captó Promise.all vs allSettled desde la transcripción del profe — buena autonomía
-- El debate type/interface quedó cerrado con el caso real de `declare global`
-- Método de pseudocódigo incorporado — aplicarlo en cada función nueva
-- Covey Hábito 2 conectado con pseudocódigo — pensamiento de alto nivel
-- Sección 29 es territorio nuevo (React) — bajar el ritmo y consolidar bien
-
----
-*Última actualización: Sesión del 29/06/2026 — Videos 464-472 completados. Sistema de medición incorporado.*
+- ObjectId vs String: usar `.toString()` para comparar
+- Borrar y recrear data de prueba cuando cambia el Schema
 
 ---
 
 ## 📊 Historial de sesiones
 
 ### Sesión 29/06/2026
-- Videos completados: 1 (473)
-- Pregunta retención 24h: no aplicó — primer uso del sistema
-- Preguntas cierre bien respondidas: 2/2
-- Dudas bloqueantes: 0
-- TODOs agregados: 0
-- Retención: 3/5 (confusión en el modelo)
-- Comprensión: 5/5
-- Autonomía: 5/5 ⭐ — resolvió confusión getTasks solo
+- Videos: 473
+- Retención 24h: no aplicó (primer uso del sistema)
+- Cierre: 2/2 ✅
+- Retención: 3/5 | Comprensión: 5/5 | Autonomía: 5/5 ⭐
+- Nota: resolvió confusión getTasks solo
+
+### Sesión 01/07/2026
+- Videos: 474, 475, 476, 477
+- Retención 24h: ✅ Promise.all vs allSettled respondido correctamente
+- Cierre: 4/4 ✅
+- Nota: captó fail-safe defaults con router.param | detectó inconsistencia ObjectId/String en Compass solo
+
+---
+
+## 📝 Notas del tutor
+- Víctor detecta inconsistencias en la DB por su cuenta — muy buen ojo
+- Conecta conceptos de seguridad con patrones de código naturalmente
+- Sección 29 es territorio nuevo (React) — bajar el ritmo
+- Pseudocódigo incorporado como hábito — mantenerlo
+
+---
+*Última actualización: Sesión del 01/07/2026 — Videos 473-477 completados. CRUD de Tareas casi completo.*

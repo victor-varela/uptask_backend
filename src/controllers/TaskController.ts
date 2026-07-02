@@ -65,6 +65,32 @@ export class TaskController {
       res.status(500).json({ error: "Hubo un error" });
     }
   };
+
+  static updateTask = async (req: Request, res: Response) => {
+    try {
+      //buscar taskID
+      const { taskId } = req.params;
+
+      const task = await Task.findByIdAndUpdate(taskId, req.body); //le enviamos el id y el body a esta funcion. La funcion reemplaza 'update' el body en la DB sin hacer .save() lo hace automatico
+
+      //Validamos que exista task y retornamos si hay error
+      if (!task) {
+        const error = new Error("Tarea no encontrada");
+        return res.status(404).json({ error: error.message });
+      }
+
+      //validamos que tarea y proyecto se correspondan
+      if (task.project.toString() !== req.project._id.toString()) {
+        const error = new Error("Accion no valida");
+        return res.status(400).json({ error: error.message });
+      }
+
+      //paso validacion respondemos al cliente
+      res.send("Tarea actualizada correctamente");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 }
 
 /**
@@ -152,7 +178,7 @@ res.send("Tarea creada");
  * 
     populate("project") le dice a Mongoose: "andá al campo project de este documento, leé su ref interno, y traé el documento     completo desde ese modelo". populate() recibe el nombre del campo en el Schema, no el nombre del modelo. Populate es lo maximo para cruzar documentos, relacionar unos con otros!! 
  * 
- * 
+ * Para validar que las tareas se correspondan con su respectivo proyecto. Aca lo importante es: estamos el controller de TASK. Este endpoint requiere el proyectId que lo estamos validando antes que todo con req.param(). Este param ya viene del cliente. La verificacion es == param de la URL 'proyectID' debe ser igual a la propiedad 'project' que tiene el modelo TASK.
  * 
  * 
  * 
