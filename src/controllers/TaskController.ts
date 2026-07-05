@@ -71,7 +71,7 @@ export class TaskController {
       //buscar taskID
       const { taskId } = req.params;
 
-      const task = await Task.findByIdAndUpdate(taskId, req.body); //le enviamos el id y el body a esta funcion. La funcion reemplaza 'update' el body en la DB sin hacer .save() lo hace automatico
+      const task = await Task.findById(taskId); //le enviamos el id y el body a esta funcion. La funcion reemplaza 'update' el body en la DB sin hacer .save() lo hace automatico | pero nos dimos cuenta que eso es incorrecto porque esta linea actualiza todo de una. no tenia sentido despues hacer las validaciones por eso primero obtenemos el id, lo validamos aca, asignamos aca los campos que se van a actualizar y despues guardamos en la DB
 
       //Validamos que exista task y retornamos si hay error
       if (!task) {
@@ -85,8 +85,46 @@ export class TaskController {
         return res.status(400).json({ error: error.message });
       }
 
-      //paso validacion respondemos al cliente
+      //paso validacion - asignamos 'update' los nuevos campos. Esto lo asigna en memoria solamente.
+      task.name = req.body.name;
+      task.description = req.body.description;
+
+      //Actualizamos en DB a task
+      await task.save();
       res.send("Tarea actualizada correctamente");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //Eliminar una Tarea
+  static deleteTask = async (req: Request, res: Response) => {
+    try {
+      //obtenemos Id
+      const { taskId } = req.params;
+
+      //Buscamos En DB- Solo buscar para despues validar y ahi recien guardar
+      const task = await Task.findById(taskId);
+      //Validamos si existe la tarea
+      if (!task) {
+        const error = new Error("Tarea no encontrada");
+        return res.status(404).json({ error: error.message });
+      }
+      //Validamos si se corresponden tarea y proyecto
+      if (task.project.toString() !== req.project._id.toString()) {
+        const error = new Error("Accion no valida");
+        return res.status(400).json({ error: error.message });
+      }
+
+      //Actualizamos project en memoria para eliminar (filtrar la tarea)Tenemos los datos de project en el request
+      req.project.tasks = req.project.tasks.filter(task => task.toString() !== taskId.toString());
+
+      //Actualizamos project en la DB y  //Actualizamos task en DB con el amigo .allSettled porque no dependen una de otra
+
+      await Promise.allSettled([req.project.save(), Task.deleteOne(task)]);
+
+      //Respondemos al cliente
+      res.json("Tarea eliminada correctamente");
     } catch (error) {
       console.log(error);
     }
@@ -180,7 +218,7 @@ res.send("Tarea creada");
  * 
  * Para validar que las tareas se correspondan con su respectivo proyecto. Aca lo importante es: estamos el controller de TASK. Este endpoint requiere el proyectId que lo estamos validando antes que todo con req.param(). Este param ya viene del cliente. La verificacion es == param de la URL 'proyectID' debe ser igual a la propiedad 'project' que tiene el modelo TASK.
  * 
- * 
+ * En eliminar tarea pasa algo maravilloso: usamos project que viene del middleware validateProject que se ejecuta en router.param al principio de projectRoutes y en ese momento buscamos en la DB y ya tenemos por su ID el project que estamos trabajando con todas sus propiedades, todo el Objeto. Luego en el controller lo manipulamos a gusto-- 
  * 
  * 
  * 

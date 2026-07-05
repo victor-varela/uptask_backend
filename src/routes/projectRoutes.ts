@@ -56,6 +56,7 @@ router.delete(
 
 //Incorporamos router.param() para evitar duplicacion de codigo | validateProject se necesita en cada enpoint.
 router.param("projectId", validateProject);
+
 //Crear tarea
 router.post(
   "/:projectId/task",
@@ -95,6 +96,13 @@ router.put(
   body("description").notEmpty().withMessage("La descripcion de la tarea es obligatoria"),
   handlerInputErrors,
   TaskController.updateTask,
+);
+
+//Eliminar un tarea
+router.delete(
+  "/:projectId/task/:taskId",
+  param("taskId").isMongoId().withMessage("Id no valido"),
+  TaskController.deleteTask,
 );
 export default router;
 

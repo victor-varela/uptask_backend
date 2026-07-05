@@ -103,9 +103,9 @@ Retención      → 3/5 mejorando con sistema de 24h ✅
 
 ## 📍 Progreso actual
 - **Sección activa:** 28 — UpTask: Tareas - Modelos, rutas y controllers
-- **Último video completado:** 477 — router.param() para evitar código repetido
-- **Próximo video:** 478
-- **Pregunta de retención para próxima sesión:** ¿Qué hace `router.param()` y qué ventaja de seguridad tiene sobre poner `validateProject` manualmente en cada endpoint?
+- **Último video completado:** 478 — Actualizar tarea (updateTask) + validación project/task
+- **Próximo video:** 479
+- **Pregunta de retención para próxima sesión:** ¿Por qué comparar `task.project !== req.project._id` sin `.toString()` es un riesgo, aunque a veces "funcione"? ¿Qué es la comparación por referencia vs por valor?
 - **Sección 27:** ✅ COMPLETA
 - **Sección 28:** 🔄 En curso
 
@@ -254,6 +254,13 @@ Mes 2     →  TryHackMe.com
 - Retención 24h: ✅ Promise.all vs allSettled respondido correctamente
 - Cierre: 4/4 ✅
 - Nota: captó fail-safe defaults con router.param | detectó inconsistencia ObjectId/String en Compass solo
+
+### Sesión 02/07/2026
+- Videos: 478
+- Retención 24h: ✅ router.param() — bien, faltó matiz "imposible olvidarse"
+- Cierre: 1/1 ✅
+- Retención: 5/5 | Comprensión: 5/5 | Autonomía: 5/5 ⭐⭐⭐
+- Nota: probó empíricamente si faltaba .toString() en updateTask — investigó con test real en Postman en vez de asumir
 
 ---
 

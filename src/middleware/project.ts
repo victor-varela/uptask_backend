@@ -29,7 +29,7 @@ export async function validateProject(req: Request, res: Response, next: NextFun
       return res.status(404).json({ error: error.message });
     }
 
-    //3- Asignar project en el req (lo que viaja en la URL nuestro nuevo poder)
+    //3- Asignar project en el req (lo que viaja en la URL nuestro nuevo poder- Va todo project todo el OBJETO es una mauseherramienta que usaremos despues.)
     req.project = project;
 
     //4- Todo Ok pasa a la nueva funcion/middleware
