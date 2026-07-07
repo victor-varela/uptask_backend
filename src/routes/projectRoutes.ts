@@ -104,6 +104,22 @@ router.delete(
   param("taskId").isMongoId().withMessage("Id no valido"),
   TaskController.deleteTask,
 );
+
+//Cambiar / Actualizar estado de una tarea
+router.post(
+  "/:projectId/task/:taskId/status",
+  // validar taskId
+  param("taskId").isMongoId().withMessage("Id no valido"),
+  handlerInputErrors,
+  //validar body == el status que viene del cliente
+  body("status").notEmpty().withMessage("EL estado es obligatorio"),
+  //validar que no me envien cualquier_cosa
+  body("status")
+    .isIn(["pending", "onHold", "inProgress", "underReview", "completed"])
+    .withMessage("El estado no es valido"),
+  handlerInputErrors,
+  TaskController.updateTaskStatus,
+);
 export default router;
 
 /**
@@ -147,5 +163,7 @@ export default router;
    El router es quien recibe las peticiones HTTP y DIRIGE EL FLUJO DE LA APP.. ---ACA ESTA EL CRUD--- 
 
   El router.param() va antes que todo para que cada vez que el router vea que en paramas esta la variable projectID, ejecute el handler 
- *
- */
+ * 
+  Fijate que las rutas en el router no son 'arbitrarias' del todo, si bien se puede poner cualquier ruta, existen patrones ROA PATTERN, etc... en la de actualizar tarea es /:projectId/:taskId/status ---> eso debe ser una convencion, lo ultimo en el put es lo que se va a actualizar, no es asi? 
+  
+  */

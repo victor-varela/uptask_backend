@@ -102,8 +102,12 @@ export default Task;
 // Con este truco el type se deriva AUTOMATICAMENTE del objeto → cambiás solo el objeto
 //
 // TIP: hoverear sobre el type en VSCode con intellisense muestra exactamente qué contiene
- *
- *
+ * Hacer ese truco es muy poderoso porque ahi mismo aseguramos que los valores de status sean esos mismos. Es una validacion que luego monngoose revisa si un cliente quiere enviar un valor diferente ya lo atrapa directamente y no permite que se modifique. Quise enviar con postman status: cualquier_cosa y mira el error que me dio :
+
+        ValidationError: Task validation failed: status: `cualquier_cosa` is not a valid enum value for path `status`.
+            at model.validate (C:\Users\Victor\Desktop\Victor\Udemy React\uptask_backend\node_modules\mongoose\lib\document.js:2864:36)
+ *  
+    SIN EMBARGO!! ese log de error no es claro y siempre es mejor tener una capa EXTRA DE SEGURIDAD EN LA API, validar con isIn() en el router con un mensaje claro es la mejor practica!!
  *
  *
  *

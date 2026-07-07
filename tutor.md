@@ -39,9 +39,22 @@
 6. Consultar al tutor solo si bloqueaste más de 5 min
 
 **CIERRE (5 min)**
-- Pregunta de cierre del video
+- Pregunta de cierre del video (ver formato ajustado abajo)
 - Completar el tracking de sesión
 - Pedir actualización del TUTOR.md
+
+### Formato de la pregunta de cierre (ajustado)
+1. El tutor revisa si la nota del código ya respondió la pregunta obvia — si es así, no la repite
+2. El tutor da un ejemplo CORTO de otro contexto donde aplica el mismo concepto — preferentemente
+   conectado a un sistema real del día a día: banco, ecommerce, red social, buscador web, apps de
+   delivery, streaming, etc. (no solo ejemplos de código aislado)
+3. Pregunta: "¿dónde más lo aplicarías vos?" o "¿por qué se hace así y cómo lo harías diferente?"
+4. Respuesta corta, 1-2 líneas — no hace falta extenderse
+
+Ejemplo de formato:
+> Ya documentaste bien por qué validar antes de escribir es mejor.
+> Mismo patrón en un banco: primero validás fondos suficientes, después ejecutás la transferencia.
+> ¿Dónde más verías este patrón — validar antes de ejecutar — en otro sistema que uses a diario?
 
 ---
 
@@ -102,12 +115,13 @@ Retención      → 3/5 mejorando con sistema de 24h ✅
 ---
 
 ## 📍 Progreso actual
-- **Sección activa:** 28 — UpTask: Tareas - Modelos, rutas y controllers
-- **Último video completado:** 478 — Actualizar tarea (updateTask) + validación project/task
-- **Próximo video:** 479
-- **Pregunta de retención para próxima sesión:** ¿Por qué comparar `task.project !== req.project._id` sin `.toString()` es un riesgo, aunque a veces "funcione"? ¿Qué es la comparación por referencia vs por valor?
+- **Sección activa:** 28 — UpTask: Tareas (updateTaskStatus fue el último endpoint del backend)
+- **Último video completado:** 480 — Cambiar estado de tarea (updateTaskStatus)
+- **Próximo video:** 481 (probablemente arranque Sección 29 — Frontend/React)
+- **Pregunta de retención para próxima sesión:** ¿Por qué el enum de Mongoose en el Schema no reemplaza la validación `isIn()` en el router, aunque los dos rechacen el mismo valor inválido?
 - **Sección 27:** ✅ COMPLETA
-- **Sección 28:** 🔄 En curso
+- **Sección 28:** ✅ COMPLETA — CRUD de Proyectos y Tareas terminado (incluye updateTaskStatus)
+- **Sección 29:** ⏳ Por confirmar si ya arrancó
 
 ---
 
@@ -117,8 +131,8 @@ Retención      → 3/5 mejorando con sistema de 24h ✅
 |---------|------|--------|-----------------|
 | 26 | UpTask - Primeros pasos backend | ✅ Completa | ✅ Total |
 | 27 | Proyectos - Modelos, rutas y controllers | ✅ Completa | ✅ Total |
-| 28 | Tareas - Modelos, rutas y controllers | 🔄 En curso | ✅ Total |
-| 29 | Frontend - Primeros pasos | ⏳ Pendiente | ✅ Total — React + Vite + TypeScript |
+| 28 | Tareas - Modelos, rutas y controllers | ✅ Completa (incl. updateTaskStatus) | ✅ Total |
+| 29 | Frontend - Primeros pasos | ⏳ Por confirmar | ✅ Total — React + Vite + TypeScript |
 | 30 | Frontend - Creando Proyectos | ⏳ Pendiente | ✅ Total — React Query, formularios |
 | 31+ | Autenticación, Tareas frontend, etc. | ⏳ Pendiente | ⚠️ Actualizar cuando lleguemos |
 
@@ -197,11 +211,27 @@ PUT    /api/projects/:id  → updateProject
 DELETE /api/projects/:id  → deleteProject
 ```
 
-### CRUD Tareas (Sección 28 — en curso)
+### CRUD Tareas (Sección 28 — COMPLETA)
 ```
-POST /api/projects/:projectId/tasks          → createTask
-GET  /api/projects/:projectId/tasks          → getProjectTasks + populate("project")
-GET  /api/projects/:projectId/tasks/:taskId  → getTaskById + validación project/task
+POST   /api/projects/:projectId/task          → createTask
+GET    /api/projects/:projectId/task          → getProjectTasks + populate("project")
+GET    /api/projects/:projectId/task/:taskId  → getTaskById + validación project/task
+PUT    /api/projects/:projectId/task/:taskId  → updateTask (findById + validar + asignar + save)
+DELETE /api/projects/:projectId/task/:taskId  → deleteTask (filter en project.tasks + deleteOne)
+```
+
+### Patrón update/delete correcto (evita bug de validar después de escribir)
+```typescript
+// ❌ Problemático: escribe antes de poder validar
+const task = await Task.findByIdAndUpdate(taskId, req.body);
+if (task.project !== req.project._id) { ... } // ya se escribió, tarde
+
+// ✅ Correcto: separa buscar → validar → asignar → guardar
+const task = await Task.findById(taskId);
+if (!task) { return 404 }
+if (task.project.toString() !== req.project._id.toString()) { return 400 }
+task.name = req.body.name;  // asignación en memoria
+await task.save();          // recién ahora escribe, ya validado
 ```
 
 ---
@@ -213,6 +243,20 @@ GET  /api/projects/:projectId/tasks/:taskId  → getTaskById + validación proje
 - Autorización: findById() → verificar permisos → operación
 - Fail-safe defaults: `router.param()` ejecuta validación automáticamente — imposible olvidarse
 - Integridad referencial: borrar via API siempre, no directo en Compass
+
+### Bug real detectado y corregido por Víctor (video 480)
+`updateTaskStatus` no tenía la validación `task.project.toString() !== req.project._id.toString()`
+que sí estaba en getTaskById, updateTask y deleteTask — inconsistencia real que permitía cambiar
+el estado de una tarea de otro proyecto. Víctor lo probó empíricamente en Postman antes de confirmar
+el bug, y agregó la validación faltante + `isIn()` para el enum de status en el router.
+
+### Dos capas de validación no son redundantes
+```
+Mongoose enum (Schema)     → error 500 genérico, mensaje crudo de Mongoose
+express-validator isIn()   → error 400 controlado, mensaje claro para el cliente
+```
+Mismo principio que `isMongoId()`: Mongoose fallaría igual, pero se prefiere capturar antes
+con un mensaje controlado en el router.
 
 ---
 
@@ -262,6 +306,22 @@ Mes 2     →  TryHackMe.com
 - Retención: 5/5 | Comprensión: 5/5 | Autonomía: 5/5 ⭐⭐⭐
 - Nota: probó empíricamente si faltaba .toString() en updateTask — investigó con test real en Postman en vez de asumir
 
+### Sesión 03/07/2026 — SECCIÓN 28 COMPLETA 🎉
+- Videos: 479
+- Retención 24h: ✅ comparación por referencia vs valor — bien explicado
+- Cierre: 1/1 ✅
+- Retención: 5/5 | Comprensión: 5/5 | Autonomía: 5/5 ⭐⭐⭐⭐
+- Nota: intentó resolver deleteTask solo antes de ver el video (transferencia desde el CRUD de proyectos) | validó las validaciones en Postman antes de cerrar sesión
+
+### Sesión 06/07/2026 — BUG DE SEGURIDAD DETECTADO 🔍
+- Videos: 480
+- Retención 24h: ✅ validar antes de escribir — con transferencia real a banco/ecommerce
+- Cierre: 2/2 ✅
+- Retención: 5/5 | Comprensión: 5/5 | Autonomía: 4/5
+- Nota: detectó y corrigió bug real — updateTaskStatus sin validación project/task. Probó empíricamente
+  en Postman antes de confirmar. Autoevaluación honesta: reconoció que pudo resolver solo el bug de
+  la URL con %0A en Postman (recreó la request en vez de identificar la causa exacta)
+
 ---
 
 ## 📝 Notas del tutor
@@ -271,4 +331,4 @@ Mes 2     →  TryHackMe.com
 - Pseudocódigo incorporado como hábito — mantenerlo
 
 ---
-*Última actualización: Sesión del 01/07/2026 — Videos 473-477 completados. CRUD de Tareas casi completo.*
+*Última actualización: Sesión del 06/07/2026 — Video 480 completado. Bug de seguridad real detectado y corregido en updateTaskStatus.*

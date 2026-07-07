@@ -93,7 +93,7 @@ export class TaskController {
       await task.save();
       res.send("Tarea actualizada correctamente");
     } catch (error) {
-      console.log(error);
+      res.status(500).json({ error: "Hubo un error" });
     }
   };
 
@@ -119,14 +119,46 @@ export class TaskController {
       //Actualizamos project en memoria para eliminar (filtrar la tarea)Tenemos los datos de project en el request
       req.project.tasks = req.project.tasks.filter(task => task.toString() !== taskId.toString());
 
-      //Actualizamos project en la DB y  //Actualizamos task en DB con el amigo .allSettled porque no dependen una de otra
+      //Actualizamos project en la DB y  //Actualizamos task en DB con el amigo .allSettled porque no dependen una de otra. En project guardamos el cambio, el filtro que hicimos en la asignacion previa. En task de plano eliminamos.
 
       await Promise.allSettled([req.project.save(), Task.deleteOne(task)]);
 
       //Respondemos al cliente
       res.json("Tarea eliminada correctamente");
     } catch (error) {
+      res.status(500).json({ error: "Hubo un error" });
+    }
+  };
+
+  //Actulizar/Cambiar estado de una tarea
+  static updateTaskStatus = async (req: Request, res: Response) => {
+    try {
+      //capturamos id de tarea a cambiar
+      //validamos si existe tarea
+      //caputramos valor del nuevo estado a cambiar
+      //asignamos en memoria
+      //actualizamos en DB
+      //respondemos al cliente
+
+      const { taskId } = req.params;
+      const task = await Task.findById(taskId);
+      if (!task) {
+        const error = new Error("Tarea no encontrada");
+        return res.status(404).json({ error: error.message });
+      }
+      // agregar esta validación que faltaba
+      if (task.project.toString() !== req.project._id.toString()) {
+        const error = new Error("Acción no válida");
+        return res.status(400).json({ error: error.message });
+      }
+      const { status } = req.body;
+      task.status = status;
+      await task.save();
+      res.json("Estado de tarea actualizado correctamente");
+    } catch (error) {
       console.log(error);
+
+      res.status(500).json({ error: "Hubo un error" });
     }
   };
 }
@@ -220,6 +252,8 @@ res.send("Tarea creada");
  * 
  * En eliminar tarea pasa algo maravilloso: usamos project que viene del middleware validateProject que se ejecuta en router.param al principio de projectRoutes y en ese momento buscamos en la DB y ya tenemos por su ID el project que estamos trabajando con todas sus propiedades, todo el Objeto. Luego en el controller lo manipulamos a gusto-- 
  * 
+ * 
+ * Por que en updateTaskStatus no hay que actualizar o tener en cuenta a project?? venimos cambiando en ambos modelos, o mejor dicho registrando los cambios en ambos modelos.. creo que es porque en project esta el id de tasks.. y el status no cambia nada en proyect.. antes cambiaba el nombre de las tareas  
  * 
  * 
  * 
