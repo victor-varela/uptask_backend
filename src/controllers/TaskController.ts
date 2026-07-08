@@ -42,25 +42,17 @@ export class TaskController {
 
   static getTaskById = async (req: Request, res: Response) => {
     try {
-      //capturamos id del param
-      const { taskId } = req.params;
-      //Buscamos la tarea en la DB
-      const task = await Task.findById(taskId);
-      //validamos si existe la tarea
-      if (!task) {
-        const error = new Error("Tarea no encontrada");
-        return res.status(404).json({ error: error.message });
-      }
+      //El middleware validateTask ya hizo su funcion. Si llegó aca es porque esta OK y esta en el req (El gran PODER de Req)
 
-      //validamos si la tarea corresponde con su respectivo proyecto-> usamos el req.project._id que habiamos hecho en el conjuro. Aplicamos toString para que sea valida la comparacion
+      //validamos si la tarea corresponde con su respectivo proyecto-> usamos el req.project._id que habiamos hecho en el conjuro. Aplicamos toString para que sea valida la comparacion / OJO las referencias de task y project ahora vienen de req
 
-      if (task.project.toString() !== req.project._id.toString()) {
+      if (req.task.project.toString() !== req.project._id.toString()) {
         const error = new Error("Accion no valida");
         //retornamos- Paramos el codigo- lo botamos al cliente
         return res.status(400).json({ error: error.message });
       }
       //paso la validacion retornamos al cliente la tarea
-      res.json(task);
+      res.json(req.task);
     } catch (error) {
       res.status(500).json({ error: "Hubo un error" });
     }
@@ -68,29 +60,20 @@ export class TaskController {
 
   static updateTask = async (req: Request, res: Response) => {
     try {
-      //buscar taskID
-      const { taskId } = req.params;
-
-      const task = await Task.findById(taskId); //le enviamos el id y el body a esta funcion. La funcion reemplaza 'update' el body en la DB sin hacer .save() lo hace automatico | pero nos dimos cuenta que eso es incorrecto porque esta linea actualiza todo de una. no tenia sentido despues hacer las validaciones por eso primero obtenemos el id, lo validamos aca, asignamos aca los campos que se van a actualizar y despues guardamos en la DB
-
-      //Validamos que exista task y retornamos si hay error
-      if (!task) {
-        const error = new Error("Tarea no encontrada");
-        return res.status(404).json({ error: error.message });
-      }
+      //El middleware validateTask ya hizo su funcion. Si llegó aca es porque esta OK y esta en el req (El gran PODER de Req). Las referencias ahora estan en req | task | project
 
       //validamos que tarea y proyecto se correspondan
-      if (task.project.toString() !== req.project._id.toString()) {
+      if (req.task.project.toString() !== req.project._id.toString()) {
         const error = new Error("Accion no valida");
         return res.status(400).json({ error: error.message });
       }
 
       //paso validacion - asignamos 'update' los nuevos campos. Esto lo asigna en memoria solamente.
-      task.name = req.body.name;
-      task.description = req.body.description;
+      req.task.name = req.body.name;
+      req.task.description = req.body.description;
 
       //Actualizamos en DB a task
-      await task.save();
+      await req.task.save();
       res.send("Tarea actualizada correctamente");
     } catch (error) {
       res.status(500).json({ error: "Hubo un error" });
@@ -100,28 +83,20 @@ export class TaskController {
   //Eliminar una Tarea
   static deleteTask = async (req: Request, res: Response) => {
     try {
-      //obtenemos Id
-      const { taskId } = req.params;
+      //El middleware validateTask ya hizo su funcion. Si llegó aca es porque esta OK y esta en el req (El gran PODER de Req)
 
-      //Buscamos En DB- Solo buscar para despues validar y ahi recien guardar
-      const task = await Task.findById(taskId);
-      //Validamos si existe la tarea
-      if (!task) {
-        const error = new Error("Tarea no encontrada");
-        return res.status(404).json({ error: error.message });
-      }
       //Validamos si se corresponden tarea y proyecto
-      if (task.project.toString() !== req.project._id.toString()) {
+      if (req.task.project.toString() !== req.project._id.toString()) {
         const error = new Error("Accion no valida");
         return res.status(400).json({ error: error.message });
       }
 
       //Actualizamos project en memoria para eliminar (filtrar la tarea)Tenemos los datos de project en el request
-      req.project.tasks = req.project.tasks.filter(task => task.toString() !== taskId.toString());
+      req.project.tasks = req.project.tasks.filter(task => task.toString() !== req.task._id.toString());
 
       //Actualizamos project en la DB y  //Actualizamos task en DB con el amigo .allSettled porque no dependen una de otra. En project guardamos el cambio, el filtro que hicimos en la asignacion previa. En task de plano eliminamos.
 
-      await Promise.allSettled([req.project.save(), Task.deleteOne(task)]);
+      await Promise.allSettled([req.project.save(), Task.deleteOne(req.task)]);
 
       //Respondemos al cliente
       res.json("Tarea eliminada correctamente");
@@ -140,20 +115,16 @@ export class TaskController {
       //actualizamos en DB
       //respondemos al cliente
 
-      const { taskId } = req.params;
-      const task = await Task.findById(taskId);
-      if (!task) {
-        const error = new Error("Tarea no encontrada");
-        return res.status(404).json({ error: error.message });
-      }
+      //El middleware validateTask ya hizo su funcion. Si llegó aca es porque esta OK y esta en el req (El gran PODER de Req)
+
       // agregar esta validación que faltaba
-      if (task.project.toString() !== req.project._id.toString()) {
+      if (req.task.project.toString() !== req.project._id.toString()) {
         const error = new Error("Acción no válida");
         return res.status(400).json({ error: error.message });
       }
       const { status } = req.body;
-      task.status = status;
-      await task.save();
+      req.task.status = status;
+      await req.task.save();
       res.json("Estado de tarea actualizado correctamente");
     } catch (error) {
       console.log(error);

@@ -4,6 +4,7 @@ import { ProjectController } from "../controllers/ProjectController";
 import { handlerInputErrors } from "../middleware/validation";
 import { TaskController } from "../controllers/TaskController";
 import { validateProject } from "../middleware/project";
+import { validateTask } from "../middleware/task";
 
 //Instaciamos Router de express
 const router = Router();
@@ -54,8 +55,9 @@ router.delete(
 
 //Router for Tasks
 
-//Incorporamos router.param() para evitar duplicacion de codigo | validateProject se necesita en cada enpoint.
+//Incorporamos router.param() para evitar duplicacion de codigo | validateProject se necesita en cada enpoint. | validateTask tambien
 router.param("projectId", validateProject);
+router.param("taskId", validateTask);
 
 //Crear tarea
 router.post(
@@ -166,4 +168,5 @@ export default router;
  * 
   Fijate que las rutas en el router no son 'arbitrarias' del todo, si bien se puede poner cualquier ruta, existen patrones ROA PATTERN, etc... en la de actualizar tarea es /:projectId/:taskId/status ---> eso debe ser una convencion, lo ultimo en el put es lo que se va a actualizar, no es asi? 
   
+  Agregamos otro router.param antes de las rutas de las tareas para encapsular un middleware que tenga el codigo de validacion de tarea existente. Luego vamos viendo en cada endpoint que tenga taskId vemos de eliminar el codigo duplicado porque ya lo tenemos en el middleware...
   */
