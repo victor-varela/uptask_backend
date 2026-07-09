@@ -41,6 +41,15 @@ export async function validateTask(req: Request, res: Response, next: NextFuncti
   //treamos el codigo que tenia el conrtolador
 }
 
+//Creamos funcion que se repetia en el controller para verificar si la tarea pertenece al proyecto correcto
+export function taskBelongsToProject(req: Request, res: Response, next: NextFunction) {
+  if (req.task.project.toString() !== req.project._id.toString()) {
+    const error = new Error("Acción no válida");
+    return res.status(400).json({ error: error.message });
+  }
+  next();
+}
+
 /**
  * Archivo rutina de middleware en Ts-> importamos los types de Express | son export async function nameOfFunction | tienen req, res, next --> porque van al siguiente middleware.
  *

@@ -4,7 +4,7 @@ import { ProjectController } from "../controllers/ProjectController";
 import { handlerInputErrors } from "../middleware/validation";
 import { TaskController } from "../controllers/TaskController";
 import { validateProject } from "../middleware/project";
-import { validateTask } from "../middleware/task";
+import { taskBelongsToProject, validateTask } from "../middleware/task";
 
 //Instaciamos Router de express
 const router = Router();
@@ -58,6 +58,7 @@ router.delete(
 //Incorporamos router.param() para evitar duplicacion de codigo | validateProject se necesita en cada enpoint. | validateTask tambien
 router.param("projectId", validateProject);
 router.param("taskId", validateTask);
+router.param("taskId", taskBelongsToProject);
 
 //Crear tarea
 router.post(

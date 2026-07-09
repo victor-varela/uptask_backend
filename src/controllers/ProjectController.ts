@@ -40,13 +40,17 @@ export class ProjectController {
 
       //Extraemos lo que PERMITIMOS enviar a la DB
       const { projectName, clientName, description } = req.body;
-      const project = await Project.findByIdAndUpdate(id, { projectName, clientName, description });
+      const project = await Project.findById(id);
       //Si no hay proyecto RETORNAMOS
       if (!project) {
         const error = new Error("Proyecto no encontrado");
         return res.status(404).send({ error: error.message });
       }
-      //ya encontramos y actuliazamos ahora GUARDAMOS project
+      //Asignamos manualmente
+      project.projectName = projectName;
+      project.clientName = clientName;
+      project.description = description;
+      //GUARDAMOS project en la DB
       await project.save();
       res.send("Proyecto Actualizado");
     } catch (error) {

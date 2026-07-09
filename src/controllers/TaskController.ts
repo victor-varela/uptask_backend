@@ -46,11 +46,6 @@ export class TaskController {
 
       //validamos si la tarea corresponde con su respectivo proyecto-> usamos el req.project._id que habiamos hecho en el conjuro. Aplicamos toString para que sea valida la comparacion / OJO las referencias de task y project ahora vienen de req
 
-      if (req.task.project.toString() !== req.project._id.toString()) {
-        const error = new Error("Accion no valida");
-        //retornamos- Paramos el codigo- lo botamos al cliente
-        return res.status(400).json({ error: error.message });
-      }
       //paso la validacion retornamos al cliente la tarea
       res.json(req.task);
     } catch (error) {
@@ -62,13 +57,9 @@ export class TaskController {
     try {
       //El middleware validateTask ya hizo su funcion. Si llegó aca es porque esta OK y esta en el req (El gran PODER de Req). Las referencias ahora estan en req | task | project
 
-      //validamos que tarea y proyecto se correspondan
-      if (req.task.project.toString() !== req.project._id.toString()) {
-        const error = new Error("Accion no valida");
-        return res.status(400).json({ error: error.message });
-      }
+      //validamos que tarea y proyecto se correspondan -- ahora lo hacemos desde el router con el middleware
 
-      //paso validacion - asignamos 'update' los nuevos campos. Esto lo asigna en memoria solamente.
+      //paso validacion - asignamos 'update' los nuevos campos. Esto lo asigna en memoria solamente. == Ahora llega limpia la data los middleware validan todo ANTES de llegar aca.
       req.task.name = req.body.name;
       req.task.description = req.body.description;
 
@@ -85,11 +76,7 @@ export class TaskController {
     try {
       //El middleware validateTask ya hizo su funcion. Si llegó aca es porque esta OK y esta en el req (El gran PODER de Req)
 
-      //Validamos si se corresponden tarea y proyecto
-      if (req.task.project.toString() !== req.project._id.toString()) {
-        const error = new Error("Accion no valida");
-        return res.status(400).json({ error: error.message });
-      }
+      //Validamos si se corresponden tarea y proyecto -- Ya lo hace el middleware
 
       //Actualizamos project en memoria para eliminar (filtrar la tarea)Tenemos los datos de project en el request
       req.project.tasks = req.project.tasks.filter(task => task.toString() !== req.task._id.toString());
@@ -117,11 +104,7 @@ export class TaskController {
 
       //El middleware validateTask ya hizo su funcion. Si llegó aca es porque esta OK y esta en el req (El gran PODER de Req)
 
-      // agregar esta validación que faltaba
-      if (req.task.project.toString() !== req.project._id.toString()) {
-        const error = new Error("Acción no válida");
-        return res.status(400).json({ error: error.message });
-      }
+      // agregar esta validación que faltaba--- ya lo hace el middleware
       const { status } = req.body;
       req.task.status = status;
       await req.task.save();
