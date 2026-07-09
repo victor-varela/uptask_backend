@@ -231,3 +231,36 @@ Fijate que importante el middleware validateProject === busca en la DB el id pro
 23- Creamos endpoint para cambiar estado de una tarea. Me llamo la atencion que no valida en el body el valor de la tarea. Nosotros definimos un objecto as const para status en el modelo asi que puede ser que eso nos asegure que no entren status 'maliciosos' en lugar de inProgress que llegue 'terminarTarea' porque eso creo que lo validaremos en el frontend.. sin embargo me llama la atencion // TODO. Lo termine haciendo con express validator en el router como debe ser, vaidar antes del controller con un isIn(['..']).withMessage()
 24- Refactorizamos el codigo que se repite en los controllers == validar si la tarea existe== lo 'encapsulamos' en un middleware y usamos el router.param() para invocarlo. OJO las referencias de task y project ahora vienen de req
 25- Refactorizamos codigo repetido en TaskController: la verificacion de que la tarea pertenece al proyecto correcto. Usamos el router.param() en otra linea.. es buenisimo ese router.param() Ese middleware lo escribimos en el archivo task.ts de la carpeta middleware
+
+## 🗺️ Mapa mental del backend — El esqueleto universal (repaso conceptual)
+> No es sobre memorizar código — es el orden lógico que sigue CUALQUIER backend, en cualquier
+> lenguaje o framework. El código cambia, esta secuencia no.
+
+```
+1. FUNDACIÓN           → Node + TypeScript + Express
+                          "Necesito un programa que escuche peticiones HTTP"
+
+2. CONEXIÓN A DATOS     → MongoDB + Mongoose
+                          "Necesito que los datos sobrevivan a un reinicio"
+
+3. FORMA DE LOS DATOS   → Modelos (Schema + Interface)
+                          "Necesito definir qué ES un Proyecto, qué ES una Tarea"
+
+4. ENTRADA A LA APP     → Router
+                          "Necesito puertas — URLs — para que el mundo interactúe"
+
+5. LÓGICA DE NEGOCIO    → Controllers
+                          "Necesito decidir qué pasa cuando tocan esa puerta"
+
+6. CONFIANZA CERO       → Validaciones (express-validator + Mongoose enum)
+                          "Nunca confío en lo que entra desde afuera"
+
+7. RELACIONES           → populate() + IDs cruzados
+                          "Un Proyecto tiene Tareas, una Tarea pertenece a un Proyecto"
+
+8. REPETIR SIN REPETIR  → Middlewares + router.param()
+                          "Si algo se repite 3 veces, lo encapsulo una vez"
+
+9. LA PUERTA DE SALIDA  → CORS (próximo: video 494)
+                          "Dejo que el frontend le hable a esta fortaleza"
+```

@@ -56,6 +56,26 @@ Ejemplo de formato:
 > Mismo patrón en un banco: primero validás fondos suficientes, después ejecutás la transferencia.
 > ¿Dónde más verías este patrón — validar antes de ejecutar — en otro sistema que uses a diario?
 
+### Principio de las 3 representaciones (objetivo real del método)
+El objetivo NO es memorizar sintaxis — es internalizar el CONCEPTO detrás del código, viéndolo
+desde 3 ángulos distintos, que ya se vienen usando sin nombrarlo así:
+```
+1. Código          → la implementación exacta
+2. Esquema/diagrama → el flujo visual (Cliente → Router → Controller → DB)
+3. Analogía real    → conectar con un sistema conocido (banco, ecommerce, apps de mensajería)
+```
+Cuando el mismo concepto se ve desde los 3 ángulos, se fija mucho más fuerte que viéndolo una
+sola vez en código. Este es el motivo real detrás del formato de pregunta de cierre.
+
+### Objetivo declarado por Víctor (no memorizar, internalizar el mapa mental)
+No aspira a memorizar cada línea del proyecto — aspira a tener internalizado el "esqueleto
+universal" de cómo se construye un backend (y luego un frontend), independientemente del
+lenguaje o framework específico. Ve esto como la skill que se vuelve más valiosa a medida que
+la IA escribe más código: no dejar de entender el código, sino poder JUZGAR si lo que la IA
+generó tiene sentido — como un director de orquesta que lee la partitura aunque no toque el
+instrumento. Las notas de código detalladas siguen siendo el repaso técnico; este mapa mental
+es el repaso conceptual de alto nivel.
+
 ---
 
 ## 📊 Sistema de medición — 5 parámetros
@@ -115,13 +135,38 @@ Retención      → 3/5 mejorando con sistema de 24h ✅
 ---
 
 ## 📍 Progreso actual
-- **Sección activa:** 28 — UpTask: Tareas (updateTaskStatus fue el último endpoint del backend)
-- **Último video completado:** 480 — Cambiar estado de tarea (updateTaskStatus)
-- **Próximo video:** 481 (probablemente arranque Sección 29 — Frontend/React)
-- **Pregunta de retención para próxima sesión:** ¿Por qué el enum de Mongoose en el Schema no reemplaza la validación `isIn()` en el router, aunque los dos rechacen el mismo valor inválido?
+- **Sección activa:** 29 — UpTask: Frontend - Creando el Frontend de la aplicación
+- **Último video completado:** 482 — Refactor taskBelongsToProject (último video de Sección 28, 19/19 ✅)
+- **Próximo video:** 483 — Creando el Proyecto e Instalando Tailwind (PRIMER video de Sección 29)
+- **Pregunta de retención para próxima sesión:** ¿Qué diferencia hay entre `:` (definir un objeto) y `=` (reasignar una propiedad de un objeto existente)? Dar un ejemplo del proyecto.
 - **Sección 27:** ✅ COMPLETA
-- **Sección 28:** ✅ COMPLETA — CRUD de Proyectos y Tareas terminado (incluye updateTaskStatus)
-- **Sección 29:** ⏳ Por confirmar si ya arrancó
+- **Sección 28:** ✅ COMPLETA — 19/19 videos, CRUD de Proyectos y Tareas + middlewares refactorizados
+- **Sección 29:** 🔄 ARRANCANDO AHORA — React + Vite + Tailwind, territorio nuevo, bajar el ritmo
+
+---
+
+## 🗺️ Roadmap detallado — Sección 30 (Frontend: Creando Proyectos)
+> Confirmado por captura de Udemy — permite anticipar conceptos antes de cada video
+
+```
+488. Página para crear proyectos
+489. Formulario de Crear Proyectos
+490. Resto de los campos
+491. Zod para tipos del formulario           ← MISMO CONCEPTO que express-validator, pero cliente
+492. Configuración de Axios
+493. Archivo de peticiones a la API
+494. CORS backend-frontend                   ← la "puerta de salida" que abriste conceptualmente
+495. Redireccionar después de enviar
+496. Notificación Toast
+497. ¿Qué es React Query?                    ← concepto NUEVO, no un patrón ya conocido — bajar ritmo
+498. Mutaciones de React Query
+499. Cómo leer errores del backend con useMutation
+```
+
+**Anticipos del tutor:**
+- 491 (Zod) → reconocimiento instantáneo, es el `express-validator` del cliente
+- 494 (CORS) → conecta directo con la teoría de seguridad ya vista (CORS solo protege navegadores)
+- 497-499 (React Query) → acá sí baja el ritmo, es territorio genuinamente nuevo
 
 ---
 
@@ -131,8 +176,8 @@ Retención      → 3/5 mejorando con sistema de 24h ✅
 |---------|------|--------|-----------------|
 | 26 | UpTask - Primeros pasos backend | ✅ Completa | ✅ Total |
 | 27 | Proyectos - Modelos, rutas y controllers | ✅ Completa | ✅ Total |
-| 28 | Tareas - Modelos, rutas y controllers | ✅ Completa (incl. updateTaskStatus) | ✅ Total |
-| 29 | Frontend - Primeros pasos | ⏳ Por confirmar | ✅ Total — React + Vite + TypeScript |
+| 28 | Tareas - Modelos, rutas y controllers | ✅ Completa — 19/19 videos | ✅ Total |
+| 29 | Frontend - Creando el Frontend | 🔄 En curso (video 483/487) | ✅ Total — React + Vite + Tailwind + TypeScript |
 | 30 | Frontend - Creando Proyectos | ⏳ Pendiente | ✅ Total — React Query, formularios |
 | 31+ | Autenticación, Tareas frontend, etc. | ⏳ Pendiente | ⚠️ Actualizar cuando lleguemos |
 
@@ -209,6 +254,39 @@ GET    /api/projects/:id  → getProjectById + populate("tasks")
 POST   /api/projects      → createProject
 PUT    /api/projects/:id  → updateProject
 DELETE /api/projects/:id  → deleteProject
+```
+
+## 🗺️ Mapa mental del backend — El esqueleto universal (repaso conceptual)
+> No es sobre memorizar código — es el orden lógico que sigue CUALQUIER backend, en cualquier
+> lenguaje o framework. El código cambia, esta secuencia no.
+
+```
+1. FUNDACIÓN           → Node + TypeScript + Express
+                          "Necesito un programa que escuche peticiones HTTP"
+
+2. CONEXIÓN A DATOS     → MongoDB + Mongoose
+                          "Necesito que los datos sobrevivan a un reinicio"
+
+3. FORMA DE LOS DATOS   → Modelos (Schema + Interface)
+                          "Necesito definir qué ES un Proyecto, qué ES una Tarea"
+
+4. ENTRADA A LA APP     → Router
+                          "Necesito puertas — URLs — para que el mundo interactúe"
+
+5. LÓGICA DE NEGOCIO    → Controllers
+                          "Necesito decidir qué pasa cuando tocan esa puerta"
+
+6. CONFIANZA CERO       → Validaciones (express-validator + Mongoose enum)
+                          "Nunca confío en lo que entra desde afuera"
+
+7. RELACIONES           → populate() + IDs cruzados
+                          "Un Proyecto tiene Tareas, una Tarea pertenece a un Proyecto"
+
+8. REPETIR SIN REPETIR  → Middlewares + router.param()
+                          "Si algo se repite 3 veces, lo encapsulo una vez"
+
+9. LA PUERTA DE SALIDA  → CORS (próximo: video 494)
+                          "Dejo que el frontend le hable a esta fortaleza"
 ```
 
 ### CRUD Tareas (Sección 28 — COMPLETA)
@@ -322,6 +400,15 @@ Mes 2     →  TryHackMe.com
   en Postman antes de confirmar. Autoevaluación honesta: reconoció que pudo resolver solo el bug de
   la URL con %0A en Postman (recreó la request en vez de identificar la causa exacta)
 
+### Sesión 09/07/2026 — SECCIÓN 28 CERRADA (19/19) 🎉 — ARRANCA FRONTEND
+- Videos: 481, 482 (últimos 2 de Sección 28: validateTask con router.param, taskBelongsToProject,
+  refactor de updateProject)
+- Retención 24h: ✅ enum Mongoose vs isIn() — explicación completa con ejemplo de pago online
+- Cierre: 2/2 ✅ (incluye buena distinción entre validaciones en cadena jerárquicas vs paralelas)
+- Nota: confirmó con captura de Udemy que Sección 28 quedó 19/19 completa y que el próximo video (483)
+  es el primero real de Sección 29 (Frontend con React + Tailwind). Corrigió al tutor sobre numeración
+  desalineada de videos — buena autoverificación de las notas del tutor.
+
 ---
 
 ## 📝 Notas del tutor
@@ -331,4 +418,4 @@ Mes 2     →  TryHackMe.com
 - Pseudocódigo incorporado como hábito — mantenerlo
 
 ---
-*Última actualización: Sesión del 06/07/2026 — Video 480 completado. Bug de seguridad real detectado y corregido en updateTaskStatus.*
+*Última actualización: Sesión del 09/07/2026 — Sección 28 CERRADA (19/19 videos). Arrancando Sección 29 — Frontend con React + Tailwind desde el video 483.*
